@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>FoodTales - Edit Profile</title>
+    <link rel="stylesheet" href="../css/perfil.css">
+</head>
+<body class="dark">
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <h1>🍜 FoodTales</h1>
+                <p class="logo-sub">edita tu aventura culinaria</p>
+            </div>
+            <button class="theme-toggle" id="themeToggle">🌙</button>
+        </div>
+
+        <!-- Foto de perfil -->
+        <div class="photo-section">
+            <img id="profilePhoto" class="profile-photo" src="https://i.pravatar.cc/300" alt="Profile photo">
+            <div class="photo-buttons">
+                <button class="photo-btn" id="uploadPhotoBtn" data-i18n="uploadPhoto">📷 Subir foto</button>
+                <button class="photo-btn" id="defaultPhotoBtn" data-i18n="defaultPhoto">🔄 Predeterminada</button>
+            </div>
+            <input type="file" id="photoInput" accept="image/*" style="display: none;">
+        </div>
+
+        <!-- Formulario de perfil -->
+        <form id="profileForm">
+            <h3 class="section-title" data-i18n="personalInfo">👤 Información personal</h3>
+            <div class="form-grid">
+                <div class="input-group">
+                    <label data-i18n="fullName">Nombre completo *</label>
+                    <input type="text" id="fullName" placeholder="María García">
+                </div>
+                <div class="input-group">
+                    <label data-i18n="birthDate">Fecha de nacimiento</label>
+                    <input type="date" id="birthDate">
+                </div>
+                <div class="input-group">
+                    <label data-i18n="age">Edad</label>
+                    <input type="text" id="age" readonly placeholder="-- años">
+                </div>
+                <div class="input-group">
+                    <label data-i18n="nationality">Nacionalidad</label>
+                    <input type="text" id="nationality" placeholder="Ej: Colombiana">
+                </div>
+                <div class="input-group">
+                    <label data-i18n="languagePref">Idioma preferido</label>
+                    <select id="languagePref">
+                        <option value="español">Español</option>
+                        <option value="inglés">English</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label data-i18n="currency">Moneda</label>
+                    <select id="currency">
+                        <option value="COP">COP $</option>
+                        <option value="USD">USD $</option>
+                        <option value="EUR">EUR €</option>
+                        <option value="MXN">MXN $</option>
+                    </select>
+                </div>
+            </div>
+
+            <h3 class="section-title" data-i18n="healthData">🧬 Datos físicos y salud</h3>
+            <div class="form-grid">
+                <div class="input-group">
+                    <label data-i18n="height">Altura (cm)</label>
+                    <input type="number" id="height" placeholder="cm">
+                </div>
+                <div class="input-group">
+                    <label data-i18n="weight">Peso (kg)</label>
+                    <input type="number" id="weight" placeholder="kg">
+                </div>
+                <div class="input-group">
+                    <label data-i18n="gender">Género</label>
+                    <select id="gender">
+                        <option value="" data-i18n="selectOption">Selecciona</option>
+                        <option value="femenino" data-i18n="female">Femenino</option>
+                        <option value="masculino" data-i18n="male">Masculino</option>
+                        <option value="no binario" data-i18n="nonBinary">No binario</option>
+                        <option value="prefiero no decir" data-i18n="preferNot">Prefiero no decir</option>
+                    </select>
+                </div>
+                <div class="input-group full-width">
+                    <label data-i18n="medicalConditions">Condiciones médicas</label>
+                    <div class="checkbox-group" id="conditionsGroup">
+                        <label><input type="checkbox" value="diabetes"> <span data-i18n="diabetes">Diabetes</span></label>
+                        <label><input type="checkbox" value="hipertension"> <span data-i18n="hypertension">Hipertensión</span></label>
+                        <label><input type="checkbox" value="celiaquia"> <span data-i18n="celiac">Celiaquía</span></label>
+                        <label><input type="checkbox" value="colesterol"> <span data-i18n="cholesterol">Colesterol alto</span></label>
+                        <label><input type="checkbox" value="otras"> <span data-i18n="other">Otras</span></label>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="section-title" data-i18n="allergies">🥜 Alergias alimentarias</h3>
+            <div class="input-group full-width">
+                <div id="alergiasList" class="alergias-container"></div>
+                <div class="add-alergia">
+                    <input type="text" id="newAlergia" placeholder="Ej: mariscos, gluten, lácteos...">
+                    <button type="button" class="small-btn" id="addAlergiaBtn" data-i18n="addAllergy">+ Añadir</button>
+                </div>
+            </div>
+
+            <h3 class="section-title" data-i18n="location">📍 Ubicación</h3>
+            <div class="input-group full-width">
+                <label data-i18n="cityCountry">Ciudad / País</label>
+                <input type="text" id="location" placeholder="Bogotá, Colombia">
+            </div>
+
+            <button type="button" class="btn-save" id="saveProfileBtn" data-i18n="saveProfile">💾 Guardar perfil</button>
+        </form>
+        <div id="saveMessage" class="message"></div>
+    </div>
+
+    <!-- Barra de navegación inferior -->
+    <div class="bottom-nav">
+        <button class="nav-item" data-page="home" data-i18n="homeIcon">🏠</button>
+        <button class="nav-item" data-page="search" data-i18n="searchIcon">🔍</button>
+        <button class="nav-item active" data-page="profile" data-i18n="profileIcon">👤</button>
+        <button class="nav-item" data-page="favorites" data-i18n="favoritesIcon">❤️</button>
+    </div>
+
+    <script>
+        // ----- DICCIONARIO DE TRADUCCIONES -----
+        const translations = {
+            español: {
+                // Labels y textos
+                uploadPhoto: "📷 Subir foto",
+                defaultPhoto: "🔄 Predeterminada",
+                personalInfo: "👤 Información personal",
+                fullName: "Nombre completo *",
+                birthDate: "Fecha de nacimiento",
+                age: "Edad",
+                nationality: "Nacionalidad",
+                languagePref: "Idioma preferido",
+                currency: "Moneda",
+                healthData: "🧬 Datos físicos y salud",
+                height: "Altura (cm)",
+                weight: "Peso (kg)",
+                gender: "Género",
+                selectOption: "Selecciona",
+                female: "Femenino",
+                male: "Masculino",
+                nonBinary: "No binario",
+                preferNot: "Prefiero no decir",
+                medicalConditions: "Condiciones médicas",
+                diabetes: "Diabetes",
+                hypertension: "Hipertensión",
+                celiac: "Celiaquía",
+                cholesterol: "Colesterol alto",
+                other: "Otras",
+                allergies: "🥜 Alergias alimentarias",
+                addAllergy: "+ Añadir",
+                location: "📍 Ubicación",
+                cityCountry: "Ciudad / País",
+                saveProfile: "💾 Guardar perfil",
+                saveSuccess: "✅ Perfil guardado correctamente",
+                logoSub: "edita tu aventura culinaria",
+                // placeholders
+                namePlaceholder: "María García",
+                nationalityPlaceholder: "Ej: Colombiana",
+                allergyPlaceholder: "Ej: mariscos, gluten, lácteos...",
+                locationPlaceholder: "Bogotá, Colombia",
+                agePlaceholder: "-- años"
+            },
+            inglés: {
+                uploadPhoto: "📷 Upload photo",
+                defaultPhoto: "🔄 Default",
+                personalInfo: "👤 Personal information",
+                fullName: "Full name *",
+                birthDate: "Birth date",
+                age: "Age",
+                nationality: "Nationality",
+                languagePref: "Preferred language",
+                currency: "Currency",
+                healthData: "🧬 Health & physical data",
+                height: "Height (cm)",
+                weight: "Weight (kg)",
+                gender: "Gender",
+                selectOption: "Select",
+                female: "Female",
+                male: "Male",
+                nonBinary: "Non-binary",
+                preferNot: "Prefer not to say",
+                medicalConditions: "Medical conditions",
+                diabetes: "Diabetes",
+                hypertension: "Hypertension",
+                celiac: "Celiac disease",
+                cholesterol: "High cholesterol",
+                other: "Other",
+                allergies: "🥜 Food allergies",
+                addAllergy: "+ Add",
+                location: "📍 Location",
+                cityCountry: "City / Country",
+                saveProfile: "💾 Save profile",
+                saveSuccess: "✅ Profile saved successfully",
+                logoSub: "edit your culinary adventure",
+                namePlaceholder: "Maria Garcia",
+                nationalityPlaceholder: "e.g., Colombian",
+                allergyPlaceholder: "e.g., shellfish, gluten, dairy...",
+                locationPlaceholder: "Bogotá, Colombia",
+                agePlaceholder: "-- years"
+            }
+        };
+
+        let currentLanguage = "español"; // por defecto
+
+        function applyLanguage(lang) {
+            currentLanguage = lang;
+            const t = translations[lang];
+            if (!t) return;
+            
+            // Actualizar textos de elementos con data-i18n
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (t[key]) {
+                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                        if (el.placeholder !== undefined) el.placeholder = t[key];
+                    } else if (el.tagName === 'BUTTON' && el.id !== 'addAlergiaBtn') {
+                        // Para botones que no son el de añadir (que tiene icono)
+                        if (key !== 'addAllergy') el.innerHTML = t[key];
+                        else el.innerHTML = t[key];
+                    } else if (el.tagName === 'LABEL') {
+                        el.innerHTML = t[key];
+                    } else if (el.tagName === 'H3') {
+                        el.innerHTML = t[key];
+                    } else if (el.classList.contains('nav-item')) {
+                        // Para íconos de navegación, solo cambiamos tooltip opcional, dejamos emoji
+                        // no cambiamos el emoji
+                    } else {
+                        el.innerHTML = t[key];
+                    }
+                }
+            });
+            
+            // Actualizar placeholders específicos que no tienen data-i18n
+            const nameInput = document.getElementById('fullName');
+            if (nameInput) nameInput.placeholder = t.namePlaceholder || (lang === 'español' ? 'María García' : 'Maria Garcia');
+            
+            const nationalityInput = document.getElementById('nationality');
+            if (nationalityInput) nationalityInput.placeholder = t.nationalityPlaceholder || (lang === 'español' ? 'Ej: Colombiana' : 'e.g., Colombian');
+            
+            const allergyInput = document.getElementById('newAlergia');
+            if (allergyInput) allergyInput.placeholder = t.allergyPlaceholder || (lang === 'español' ? 'Ej: mariscos, gluten, lácteos...' : 'e.g., shellfish, gluten, dairy...');
+            
+            const locationInput = document.getElementById('location');
+            if (locationInput) locationInput.placeholder = t.locationPlaceholder || (lang === 'español' ? 'Bogotá, Colombia' : 'Bogotá, Colombia');
+            
+            const ageInput = document.getElementById('age');
+            if (ageInput) ageInput.placeholder = t.agePlaceholder || (lang === 'español' ? '-- años' : '-- years');
+            
+            const logoSub = document.querySelector('.logo-sub');
+            if (logoSub) logoSub.textContent = t.logoSub;
+            
+            // Traducir opciones del select de género
+            const genderSelect = document.getElementById('gender');
+            if (genderSelect) {
+                const options = genderSelect.options;
+                if (options[0]) options[0].text = t.selectOption;
+                if (options[1]) options[1].text = t.female;
+                if (options[2]) options[2].text = t.male;
+                if (options[3]) options[3].text = t.nonBinary;
+                if (options[4]) options[4].text = t.preferNot;
+            }
+            
+            // Traducir checkboxes de condiciones
+            const conditionLabels = {
+                diabetes: t.diabetes,
+                hipertension: t.hypertension,
+                celiaquia: t.celiac,
+                colesterol: t.cholesterol,
+                otras: t.other
+            };
+            document.querySelectorAll('#conditionsGroup label').forEach(label => {
+                const checkbox = label.querySelector('input');
+                const span = label.querySelector('span');
+                if (checkbox && span && conditionLabels[checkbox.value]) {
+                    span.textContent = conditionLabels[checkbox.value];
+                }
+            });
+            
+            // Traducir mensaje del botón de alergias
+            const addBtn = document.getElementById('addAlergiaBtn');
+            if (addBtn) addBtn.innerHTML = t.addAllergy;
+            
+            // Traducir botón de guardar
+            const saveBtn = document.getElementById('saveProfileBtn');
+            if (saveBtn) saveBtn.innerHTML = t.saveProfile;
+        }
+
+        // ----- TEMA OSCURO/CLARO -----
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('foodtales_theme');
+            if (savedTheme === 'light') {
+                body.classList.remove('dark');
+                body.classList.add('light');
+                themeToggle.textContent = '☀️';
+            } else {
+                body.classList.remove('light');
+                body.classList.add('dark');
+                themeToggle.textContent = '🌙';
+            }
+        }
+        themeToggle.addEventListener('click', () => {
+            if (body.classList.contains('dark')) {
+                body.classList.remove('dark');
+                body.classList.add('light');
+                localStorage.setItem('foodtales_theme', 'light');
+                themeToggle.textContent = '☀️';
+            } else {
+                body.classList.remove('light');
+                body.classList.add('dark');
+                localStorage.setItem('foodtales_theme', 'dark');
+                themeToggle.textContent = '🌙';
+            }
+        });
+        loadTheme();
+
+        // ----- FOTO DE PERFIL -----
+        const profileImg = document.getElementById('profilePhoto');
+        const photoInput = document.getElementById('photoInput');
+        const uploadBtn = document.getElementById('uploadPhotoBtn');
+        const defaultBtn = document.getElementById('defaultPhotoBtn');
+
+        uploadBtn.addEventListener('click', () => photoInput.click());
+        photoInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => profileImg.src = event.target.result;
+                reader.readAsDataURL(file);
+            }
+        });
+        defaultBtn.addEventListener('click', () => profileImg.src = 'https://i.pravatar.cc/300');
+
+        // ----- ALERGIAS -----
+        let alergiasArray = [];
+
+        function renderAlergias() {
+            const container = document.getElementById('alergiasList');
+            container.innerHTML = '';
+            alergiasArray.forEach((alergia, index) => {
+                const tag = document.createElement('span');
+                tag.className = 'alergia-tag';
+                tag.innerHTML = `${alergia} <button data-index="${index}">✖</button>`;
+                container.appendChild(tag);
+            });
+            document.querySelectorAll('.alergia-tag button').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const idx = parseInt(btn.getAttribute('data-index'));
+                    alergiasArray.splice(idx, 1);
+                    renderAlergias();
+                });
+            });
+        }
+
+        document.getElementById('addAlergiaBtn').addEventListener('click', () => {
+            const input = document.getElementById('newAlergia');
+            const value = input.value.trim();
+            if (value && !alergiasArray.includes(value)) {
+                alergiasArray.push(value);
+                renderAlergias();
+                input.value = '';
+            }
+        });
+
+        // ----- CALCULAR EDAD -----
+        function calculateAge(birthDate) {
+            if (!birthDate) return '';
+            const today = new Date();
+            const birth = new Date(birthDate);
+            let age = today.getFullYear() - birth.getFullYear();
+            const m = today.getMonth() - birth.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+            return age;
+        }
+
+        document.getElementById('birthDate').addEventListener('change', function() {
+            const age = calculateAge(this.value);
+            document.getElementById('age').value = age ? age + (currentLanguage === 'español' ? ' años' : ' years') : '';
+        });
+
+        // ----- CARGAR PERFIL -----
+        function loadProfile() {
+            const currentUser = JSON.parse(localStorage.getItem('foodtales_current_user'));
+            if (!currentUser) return;
+            const email = currentUser.email;
+            const users = JSON.parse(localStorage.getItem('foodtales_users')) || [];
+            const user = users.find(u => u.email === email);
+            if (user && user.profileData) {
+                const data = user.profileData;
+                document.getElementById('fullName').value = data.fullName || '';
+                document.getElementById('birthDate').value = data.birthDate || '';
+                const ageVal = data.age || '';
+                document.getElementById('age').value = ageVal;
+                document.getElementById('nationality').value = data.nationality || '';
+                const langPref = data.languagePref || 'español';
+                document.getElementById('languagePref').value = langPref;
+                document.getElementById('currency').value = data.currency || 'COP';
+                document.getElementById('height').value = data.height || '';
+                document.getElementById('weight').value = data.weight || '';
+                document.getElementById('gender').value = data.gender || '';
+                document.getElementById('location').value = data.location || '';
+                if (data.conditions) {
+                    document.querySelectorAll('#conditionsGroup input').forEach(cb => {
+                        if (data.conditions.includes(cb.value)) cb.checked = true;
+                    });
+                }
+                if (data.alergias) {
+                    alergiasArray = [...data.alergias];
+                    renderAlergias();
+                }
+                if (data.photo) profileImg.src = data.photo;
+                
+                // Aplicar idioma guardado
+                if (langPref === 'inglés') {
+                    applyLanguage('inglés');
+                } else {
+                    applyLanguage('español');
+                }
+            } else {
+                if (user && user.name) document.getElementById('fullName').value = user.name;
+                applyLanguage('español'); // default
+            }
+        }
+
+        // ----- GUARDAR PERFIL -----
+        function saveProfile() {
+            const currentUser = JSON.parse(localStorage.getItem('foodtales_current_user'));
+            if (!currentUser) {
+                alert('No hay sesión activa');
+                return;
+            }
+            const email = currentUser.email;
+            const users = JSON.parse(localStorage.getItem('foodtales_users')) || [];
+            const userIndex = users.findIndex(u => u.email === email);
+            if (userIndex === -1) return;
+
+            const birthDate = document.getElementById('birthDate').value;
+            const ageNum = calculateAge(birthDate);
+            const ageText = ageNum ? ageNum + (currentLanguage === 'español' ? ' años' : ' years') : '';
+            
+            const conditionsSelected = [];
+            document.querySelectorAll('#conditionsGroup input:checked').forEach(cb => conditionsSelected.push(cb.value));
+
+            const selectedLanguage = document.getElementById('languagePref').value;
+            
+            const profileData = {
+                fullName: document.getElementById('fullName').value,
+                birthDate: birthDate,
+                age: ageText,
+                nationality: document.getElementById('nationality').value,
+                languagePref: selectedLanguage,
+                currency: document.getElementById('currency').value,
+                height: document.getElementById('height').value,
+                weight: document.getElementById('weight').value,
+                gender: document.getElementById('gender').value,
+                conditions: conditionsSelected,
+                alergias: alergiasArray,
+                location: document.getElementById('location').value,
+                photo: profileImg.src
+            };
+
+            users[userIndex].profileData = profileData;
+            users[userIndex].profileCompleted = true;
+            if (users[userIndex].language !== selectedLanguage) {
+                users[userIndex].language = selectedLanguage;
+            }
+            localStorage.setItem('foodtales_users', JSON.stringify(users));
+            
+            // Aplicar idioma después de guardar
+            if (selectedLanguage === 'inglés') {
+                applyLanguage('inglés');
+            } else {
+                applyLanguage('español');
+            }
+            
+            const msgDiv = document.getElementById('saveMessage');
+            const successMsg = currentLanguage === 'español' ? '✅ Perfil guardado correctamente' : '✅ Profile saved successfully';
+            msgDiv.innerHTML = successMsg;
+            msgDiv.className = 'message success';
+            setTimeout(() => msgDiv.innerHTML = '', 2500);
+        }
+
+        document.getElementById('saveProfileBtn').addEventListener('click', saveProfile);
+        
+        // Cambiar idioma cuando se selecciona en el select
+        document.getElementById('languagePref').addEventListener('change', (e) => {
+            const newLang = e.target.value;
+            if (newLang === 'inglés') {
+                applyLanguage('inglés');
+            } else {
+                applyLanguage('español');
+            }
+        });
+        
+        // Navegación
+        document.querySelectorAll('.nav-item').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const page = btn.getAttribute('data-page');
+                if (page === 'home') alert(currentLanguage === 'español' ? 'Próximamente: Home' : 'Coming soon: Home');
+                else if (page === 'search') alert(currentLanguage === 'español' ? 'Próximamente: Búsqueda' : 'Coming soon: Search');
+                else if (page === 'favorites') alert(currentLanguage === 'español' ? 'Próximamente: Favoritos' : 'Coming soon: Favorites');
+            });
+        });
+
+        loadProfile();
+    </script>
+</body>
+</html>
