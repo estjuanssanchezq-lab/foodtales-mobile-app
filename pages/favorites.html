@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>FoodTales - Mis favoritos</title>
+    <link rel="stylesheet" href="../css/favorites.css">
+</head>
+<body class="dark">
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <h1>🍜 FoodTales</h1>
+            </div>
+            <div class="action-buttons">
+                <button class="theme-toggle" id="themeToggle">🌙</button>
+                <button class="back-btn" id="backBtn">← Volver</button>
+            </div>
+        </div>
+
+        <div class="favorites-header">
+            <div class="favorites-title">❤️ MIS FAVORITOS</div>
+            <p>Los platos que guardaste para más tarde</p>
+        </div>
+
+        <div id="favoritesContent">
+            <div style="text-align: center; padding: 3rem;">Cargando...</div>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <button class="nav-item" data-page="home">🏠</button>
+        <button class="nav-item" data-page="search">🔍</button>
+        <button class="nav-item" data-page="profile">👤</button>
+        <button class="nav-item active" data-page="favorites">❤️</button>
+    </div>
+
+    <script src="../js/data.js"></script>
+    <script>
+        // ----- TEMA OSCURO/CLARO -----
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('foodtales_theme');
+            if (savedTheme === 'light') {
+                body.classList.remove('dark');
+                body.classList.add('light');
+                themeToggle.textContent = '☀️';
+            } else {
+                body.classList.remove('light');
+                body.classList.add('dark');
+                themeToggle.textContent = '🌙';
+            }
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            if (body.classList.contains('dark')) {
+                body.classList.remove('dark');
+                body.classList.add('light');
+                localStorage.setItem('foodtales_theme', 'light');
+                themeToggle.textContent = '☀️';
+            } else {
+                body.classList.remove('light');
+                body.classList.add('dark');
+                localStorage.setItem('foodtales_theme', 'dark');
+                themeToggle.textContent = '🌙';
+            }
+        });
+        
+        loadTheme();
+        
+        // ----- OBTENER FAVORITOS -----
+        const platosData = getPlatos();
+        
+        function getFavoritosPlatos() {
+            const favoritosIds = getFavoritos();
+            return platosData.filter(plato => favoritosIds.includes(plato.id));
+        }
+        
+        function verDetalle(id) {
+            window.location.href = `dish-detail.html?id=${id}`;
+        }
+        
+        function renderFavoritos() {
+            const favoritos = getFavoritosPlatos();
+            const container = document.getElementById('favoritesContent');
+            
+            if (favoritos.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="emoji">💔</div>
+                        <h3>No tienes favoritos aún</h3>
+                        <p>Explora platos y guarda tus favoritos tocando el corazón ❤️</p>
+                        <button class="btn-primary" onclick="window.location.href='home.html'">Explorar platos →</button>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = `
+                <div class="platos-grid">
+                    ${favoritos.map(plato => `
+                        <div class="plato-card" data-id="${plato.id}">
+                            <img class="plato-img" src="${plato.imagen}" alt="${plato.nombre}" onerror="this.src='https://placehold.co/400x200?text=${plato.nombre}'">
+                            <div class="plato-info">
+                                <div class="plato-nombre">${plato.nombre}</div>
+                                <div class="plato-restaurante">🏠 ${plato.restaurante}</div>
+                                <div class="plato-stars">${'⭐'.repeat(Math.floor(plato.estrellas))} ${plato.estrellas}</div>
+                                <div class="plato-details">
+                                    <span>📏 ${plato.distancia} km (${plato.tiempoCaminando} min)</span>
+                                    <span>💰 $${plato.precio.toLocaleString()}</span>
+                                </div>
+                                <div class="plato-actions">
+                                    <button class="favorite-btn" data-id="${plato.id}">❤️</button>
+                                    <button class="btn-secondary" onclick="verDetalle('${plato.id}')">Ver más →</button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            // Eventos para quitar favoritos
+            document.querySelectorAll('.favorite-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const id = btn.getAttribute('data-id');
+                    removeFavorito(id);
+                    renderFavoritos(); // re-renderizar
+                });
+            });
+            
+            // Click en toda la tarjeta para ver detalle
+            document.querySelectorAll('.plato-card').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('favorite-btn') || e.target.classList.contains('btn-secondary')) return;
+                    const id = card.getAttribute('data-id');
+                    if (id) verDetalle(id);
+                });
+            });
+        }
+        
+        renderFavoritos();
+        
+        // ----- NAVEGACIÓN -----
+        document.getElementById('backBtn').addEventListener('click', () => {
+            window.location.href = 'home.html';
+        });
+        
+        document.querySelectorAll('.nav-item').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const page = btn.getAttribute('data-page');
+                if (page === 'profile') window.location.href = 'perfil.html';
+                else if (page === 'home') window.location.href = 'home.html';
+                else if (page === 'favorites') window.location.href = 'favorites.html';
+                else if (page === 'search') alert('Próximamente: Búsqueda avanzada');
+            });
+        });
+    </script>
+</body>
+</html>

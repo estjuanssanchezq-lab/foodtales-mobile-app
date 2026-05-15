@@ -1,0 +1,247 @@
+/* Styles extracted from pages/favorites.html */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body {
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    min-height: 100vh;
+    padding: 20px;
+    padding-bottom: 80px;
+}
+
+body.dark {
+    background-color: #0a0a0a;
+    color: #f5f5f5;
+}
+
+body.light {
+    background-color: #f5f5f0;
+    color: #1a1a1a;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid;
+}
+
+body.dark .header {
+    border-bottom-color: #333;
+}
+
+body.light .header {
+    border-bottom-color: #ddd;
+}
+
+.logo h1 {
+    font-size: 1.5rem;
+}
+
+.back-btn, .theme-toggle {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+}
+
+body.dark .back-btn, body.dark .theme-toggle {
+    color: #ffb347;
+}
+
+body.light .back-btn, body.light .theme-toggle {
+    color: #e07c1f;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+/* Título */
+.favorites-header {
+    text-align: center;
+    margin: 1rem 0 2rem 0;
+}
+
+.favorites-title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #ffb347;
+}
+
+/* Grid de favoritos */
+.platos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.plato-card {
+    border-radius: 20px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s;
+    position: relative;
+}
+
+body.dark .plato-card {
+    background: #1a1a1a;
+    border: 1px solid #333;
+}
+
+body.light .plato-card {
+    background: white;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.plato-card:hover {
+    transform: translateY(-5px);
+}
+
+.plato-img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.plato-info {
+    padding: 1rem;
+}
+
+.plato-nombre {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 0.3rem;
+}
+
+.plato-restaurante {
+    font-size: 0.8rem;
+    opacity: 0.7;
+    margin-bottom: 0.5rem;
+}
+
+.plato-stars {
+    color: #ffb347;
+    margin-bottom: 0.5rem;
+}
+
+.plato-details {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    margin-bottom: 0.8rem;
+}
+
+.plato-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.favorite-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.btn-secondary {
+    background: none;
+    border: 2px solid #ffb347;
+    color: #ffb347;
+    padding: 4px 12px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.75rem;
+}
+
+.btn-primary {
+    background-color: #ffb347;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: bold;
+    font-family: inherit;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 3rem;
+}
+
+.empty-state .emoji {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+/* Bottom nav */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 10px 20px;
+    backdrop-filter: blur(10px);
+    border-top: 1px solid;
+    z-index: 90;
+}
+
+body.dark .bottom-nav {
+    background-color: rgba(10, 10, 10, 0.95);
+    border-top-color: #333;
+}
+
+body.light .bottom-nav {
+    background-color: rgba(245, 245, 240, 0.95);
+    border-top-color: #ddd;
+}
+
+.nav-item {
+    font-size: 1.8rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    opacity: 0.6;
+}
+
+body.dark .nav-item {
+    color: white;
+}
+
+body.light .nav-item {
+    color: #1a1a1a;
+}
+
+.nav-item.active {
+    opacity: 1;
+    color: #ffb347;
+}
+
+@media (max-width: 700px) {
+    .platos-grid {
+        grid-template-columns: 1fr;
+    }
+}

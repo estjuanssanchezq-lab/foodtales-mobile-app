@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>FoodTales - Comparar platos</title>
+    <link rel="stylesheet" href="../css/compare.css">
+</head>
+<body class="dark">
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <h1>🍜 FoodTales</h1>
+            </div>
+            <div class="action-buttons">
+                <button class="theme-toggle" id="themeToggle">🌙</button>
+                <button class="back-btn" id="backBtn">← Volver</button>
+            </div>
+        </div>
+
+        <div class="vs-header">
+            <div class="vs-title">⚔️ COMPARACIÓN ⚔️</div>
+            <p>¿Cuál plato se adapta más a ti?</p>
+        </div>
+
+        <div id="compareContent">
+            <div style="text-align: center; padding: 3rem;">Cargando...</div>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <button class="nav-item" data-page="home">🏠</button>
+        <button class="nav-item" data-page="search">🔍</button>
+        <button class="nav-item" data-page="profile">👤</button>
+        <button class="nav-item" data-page="favorites">❤️</button>
+    </div>
+
+    <script src="../js/data.js"></script>
+    <script>
+        // ----- TEMA OSCURO/CLARO -----
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('foodtales_theme');
+            if (savedTheme === 'light') {
+                body.classList.remove('dark');
+                body.classList.add('light');
+                themeToggle.textContent = '☀️';
+            } else {
+                body.classList.remove('light');
+                body.classList.add('dark');
+                themeToggle.textContent = '🌙';
+            }
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            if (body.classList.contains('dark')) {
+                body.classList.remove('dark');
+                body.classList.add('light');
+                localStorage.setItem('foodtales_theme', 'light');
+                themeToggle.textContent = '☀️';
+            } else {
+                body.classList.remove('light');
+                body.classList.add('dark');
+                localStorage.setItem('foodtales_theme', 'dark');
+                themeToggle.textContent = '🌙';
+            }
+        });
+        
+        loadTheme();
+        
+        // ----- OBTENER IDs DE LA URL -----
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+        
+        let id1 = getQueryParam('id1');
+        let id2 = getQueryParam('id2');
+        
+        // Si no vienen en URL, intentar desde localStorage (para cuando viene desde detail)
+        if (!id1 || !id2) {
+            const tempCompare = localStorage.getItem('foodtales_temp_compare');
+            if (tempCompare && !id1) {
+                id1 = tempCompare;
+                localStorage.removeItem('foodtales_temp_compare');
+            }
+        }
+        
+        const platosData = getPlatos();
+        
+        function determinarGanador(platoA, platoB, categoria) {
+            switch(categoria) {
+                case 'precio':
+                    return platoA.precio < platoB.precio ? platoA : platoB;
+                case 'distancia':
+                    return platoA.distancia < platoB.distancia ? platoA : platoB;
+                case 'estrellas':
+                    return platoA.estrellas > platoB.estrellas ? platoA : platoB;
+                case 'tiempo':
+                    return platoA.tiempoPreparacion < platoB.tiempoPreparacion ? platoA : platoB;
+                default:
+                    return null;
+            }
+        }
+        
+        function renderComparacion(plato1, plato2) {
+            const ganadorPrecio = determinarGanador(plato1, plato2, 'precio');
+            const ganadorDistancia = determinarGanador(plato1, plato2, 'distancia');
+            const ganadorEstrellas = determinarGanador(plato1, plato2, 'estrellas');
+            const ganadorTiempo = determinarGanador(plato1, plato2, 'tiempo');
+            
+            const html = `
+                <div class="compare-grid">
+                    <!-- Plato 1 -->
+                    <div class="dish-card">
+                        <img class="dish-img" src="${plato1.imagen}" alt="${plato1.nombre}" onerror="this.src='https://placehold.co/400x200?text=${plato1.nombre}'">
+                        <div class="dish-info">
+                            <div class="dish-name">${plato1.nombre}</div>
+                            <div class="dish-restaurant">🏠 ${plato1.restaurante}</div>
+                            
+                            <div class="compare-table">
+                                <div class="compare-row">
+                                    <span class="compare-label">💰 Precio</span>
+                                    <span>$${plato1.precio.toLocaleString()} ${plato1.moneda} ${ganadorPrecio?.id === plato1.id ? '<span class="winner-badge">🏆 más económico</span>' : ''}</span>
+                                </div>
+                                <div class="compare-row">
+                                    <span class="compare-label">📏 Distancia</span>
+                                    <span>${plato1.distancia} km (${plato1.tiempoCaminando} min) ${ganadorDistancia?.id === plato1.id ? '<span class="winner-badge">🏆 más cerca</span>' : ''}</span>
+                                </div>
+                                <div class="compare-row">
+                                    <span class="compare-label">⭐ Calificación</span>
+                                    <span>${'⭐'.repeat(Math.floor(plato1.estrellas))} ${plato1.estrellas} ${ganadorEstrellas?.id === plato1.id ? '<span class="winner-badge">🏆 mejor puntuado</span>' : ''}</span>
+                                </div>
+                                <div class="compare-row">
+                                    <span class="compare-label">⏱️ Tiempo preparación</span>
+                                    <span>${plato1.tiempoPreparacion} min ${ganadorTiempo?.id === plato1.id ? '<span class="winner-badge">🏆 más rápido</span>' : ''}</span>
+                                </div>
+                                <div class="compare-row">
+                                    <span class="compare-label">🧂 Sabor</span>
+                                    <span>${plato1.sabor <= 3 ? 'Salado' : plato1.sabor >= 7 ? 'Dulce' : 'Equilibrado'}</span>
+                                </div>
+                                <div class="compare-row">
+                                    <span class="compare-label">🕒 Horario</span>
+                                    <span>${plato1.horarios}</span>
+                                </div>
+                            </div>
+                            
+                            <button class="btn-view" onclick="verDetalle('${plato1.id}')">Ver detalle →</button>
+                        </div>
+                    </div>
+                    
+                    <div class="vs-center">
+                        <div>VS</div>
+                    </div>
+                    
+                    <!-- Plato 2 -->
+                    <div class="dish-card">
+                        <img class="dish-img" src="${plato2.imagen}" alt="${plato2.nombre}" onerror="this.src='https://placehold.co/400x200?text=${plato2.nombre}'">
+                        <div class="dish-info">
+                            <div class="dish-name">${plato2.nombre}</div>
+                            <div class="dish-restaurant">🏠 ${plato2.restaurante}</div>
+                            
+                            <div class="compare-table">
+                                <div class="compare-row">
+                                    <span class="compare-label">💰 Precio</span>
+                                    <span>$${plato2.precio.toLocaleString()} ${plato2.moneda} ${ganadorPrecio?.id === plato2.id ? '<span class="winner-badge">🏆 más económico</span>' : ''}</span>
+                                </div>
+                                <div class="compare-row">
+                                    <span class="compare-label">📏 Distancia</span>
+                                    <span>${plato2.distancia} km (${plato2.tiempoCaminando} min) ${ganadorDistancia?.id === plato2.id ? '<span class="winner-badge">🏆 más cerca</span>' : ''}</span>
+                                </div>
+                                <div class="compare-row">
+                                    <span class="compare-label">⭐ Calificación</span>
+                                    <span>${'⭐'.repeat(Math.floor(plato2.estrellas))} ${plato2.estrellas} ${ganadorEstrellas?.id === plato2.id ? '<span class="winner-badge">🏆 mejor puntuado</span>' : ''}</span>
+                                </div>
+                                <div class="compare-row">
+                                    <span class="compare-label">⏱️ Tiempo preparación</span>
+                                    <span>${plato2.tiempoPreparacion} min ${ganadorTiempo?.id === plato2.id ? '<span class="winner-badge">🏆 más rápido</span>' : ''}</span>
+                                </div>
+                                <div class="compare-row">
+                                    <span class="compare-label">🧂 Sabor</span>
+                                    <span>${plato2.sabor <= 3 ? 'Salado' : plato2.sabor >= 7 ? 'Dulce' : 'Equilibrado'}</span>
+                                </div>
+                                <div class="compare-row">
+                                    <span class="compare-label">🕒 Horario</span>
+                                    <span>${plato2.horarios}</span>
+                                </div>
+                            </div>
+                            
+                            <button class="btn-view" onclick="verDetalle('${plato2.id}')">Ver detalle →</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 2rem; padding: 1rem; background: rgba(255,180,71,0.1); border-radius: 20px;">
+                    <strong>📊 Resumen:</strong> 
+                    ${ganadorPrecio?.nombre} es más económico · 
+                    ${ganadorDistancia?.nombre} está más cerca · 
+                    ${ganadorEstrellas?.nombre} tiene mejor calificación · 
+                    ${ganadorTiempo?.nombre} se prepara más rápido
+                </div>
+            `;
+            
+            document.getElementById('compareContent').innerHTML = html;
+        }
+        
+        function verDetalle(id) {
+            window.location.href = `dish-detail.html?id=${id}`;
+        }
+        
+        // Cargar comparación
+        if (id1 && id2) {
+            const plato1 = platosData.find(p => p.id === id1);
+            const plato2 = platosData.find(p => p.id === id2);
+            
+            if (plato1 && plato2) {
+                renderComparacion(plato1, plato2);
+            } else {
+                document.getElementById('compareContent').innerHTML = `
+                    <div class="no-compare">
+                        <p>❌ No se encontraron uno o ambos platos para comparar.</p>
+                        <button class="btn-primary" onclick="window.location.href='home.html'">Volver al home</button>
+                    </div>
+                `;
+            }
+        } else {
+            document.getElementById('compareContent').innerHTML = `
+                <div class="no-compare">
+                    <p>😢 No hay platos seleccionados para comparar.</p>
+                    <button class="btn-primary" onclick="window.location.href='home.html'">Explorar platos</button>
+                </div>
+            `;
+        }
+        
+        // ----- NAVEGACIÓN -----
+        document.getElementById('backBtn').addEventListener('click', () => {
+            window.location.href = 'home.html';
+        });
+        
+        document.querySelectorAll('.nav-item').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const page = btn.getAttribute('data-page');
+                if (page === 'profile') window.location.href = 'perfil.html';
+                else if (page === 'home') window.location.href = 'home.html';
+                else if (page === 'favorites') window.location.href = 'favorites.html';
+                else if (page === 'search') alert('Próximamente: Búsqueda avanzada');
+            });
+        });
+    </script>
+</body>
+</html>
