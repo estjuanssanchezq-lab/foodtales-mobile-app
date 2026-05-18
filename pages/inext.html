@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>FoodTales - Inicio</title>
+    <title>FoodTales - Inicio de Sesión</title>
     <link rel="stylesheet" href="../css/inext.css">
 </head>
 <body class="dark">
@@ -311,7 +311,7 @@
             }, 1500);
         });
 
-        // Login
+        // Login - Redirige a pag_inicial.html
         document.getElementById('loginBtn').addEventListener('click', () => {
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
@@ -335,16 +335,14 @@
             showMessage('loginMessage', successMsg, 'success', currentLanguage);
             
             setTimeout(() => {
-                if (!user.profileCompleted) {
-                    window.location.href = 'perfil.html';
-                } else {
-                    window.location.href = 'home.html';
-                }
+                window.location.href = 'pag_inicial.html';
             }, 1000);
         });
 
-        // Inicializar idioma
+        // Inicializar idioma (sin redirección automática)
         loadUserLanguageFromSession();
+        
+       
     </script>
 </body>
 </html>
