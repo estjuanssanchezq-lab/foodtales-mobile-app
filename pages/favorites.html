@@ -152,9 +152,9 @@
             btn.addEventListener('click', (e) => {
                 const page = btn.getAttribute('data-page');
                 if (page === 'profile') window.location.href = 'perfil.html';
-                else if (page === 'home') window.location.href = 'home.html';
+                else if (page === 'home') window.location.href = 'pag_inicial.html';
                 else if (page === 'favorites') window.location.href = 'favorites.html';
-                else if (page === 'search') alert('Próximamente: Búsqueda avanzada');
+                else if (page === 'search') window.location.href = 'home.html';
             });
         });
     </script>
