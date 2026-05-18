@@ -58,7 +58,7 @@
 
     <!-- Bottom navigation -->
     <div class="bottom-nav">
-        <button class="nav-item active" data-page="inicio">🏠</button>
+        <button class="nav-item" data-page="inicio">🏠</button>
         <button class="nav-item" data-page="search">🔍</button>
         <button class="nav-item" data-page="profile">👤</button>
         <button class="nav-item" data-page="favorites">❤️</button>
@@ -143,14 +143,19 @@
             });
         });
         
-        // ----- NAVEGACIÓN -----
+        // ----- NAVEGACIÓN CORREGIDA -----
         document.querySelectorAll('.nav-item').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const page = btn.getAttribute('data-page');
-                if (page === 'profile') window.location.href = 'perfil.html';
-                else if (page === 'inicio') window.location.href = 'pag_inicial.html';
-                else if (page === 'favorites') window.location.href = 'favorites.html';
-                else if (page === 'search') alert('Próximamente: Búsqueda avanzada');
+                if (page === 'profile') {
+                    window.location.href = 'perfil.html';
+                } else if (page === 'inicio') {
+                    window.location.href = 'pag_inicial.html';
+                } else if (page === 'favorites') {
+                    window.location.href = 'favorites.html';
+                } else if (page === 'search') {
+                    window.location.href = 'home.html';
+                }
             });
         });
     </script>
