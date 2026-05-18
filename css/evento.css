@@ -1,0 +1,359 @@
+/* Styles for evento.html */
+
+/* Botón atrás */
+.back-btn {
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+body.dark .back-btn {
+    color: #ffb347;
+}
+
+body.light .back-btn {
+    color: #ff8c42;
+}
+
+/* Hero del evento */
+.event-hero {
+    background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 100%), url('../imagenes/hamburguesa.jpg');
+    background-size: cover;
+    background-position: center;
+    border-radius: 25px;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    color: white;
+}
+
+.event-date {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    opacity: 0.9;
+}
+
+.event-hero-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.event-hero-subtitle {
+    font-size: 1rem;
+    opacity: 0.9;
+}
+
+/* Tarjetas de información */
+.info-card {
+    background: rgba(255, 180, 71, 0.1);
+    border-radius: 20px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+body.dark .info-card {
+    background: #1a1a1a;
+    border: 1px solid #333;
+}
+
+body.light .info-card {
+    background: white;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.info-card-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.info-card-text {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    opacity: 0.9;
+}
+
+/* Secciones expandibles */
+.expandable-section {
+    margin-bottom: 1.5rem;
+}
+
+.expandable-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding: 1rem 1.5rem;
+    border-radius: 20px;
+    transition: all 0.2s;
+}
+
+body.dark .expandable-header {
+    background: #1a1a1a;
+    border: 1px solid #333;
+}
+
+body.light .expandable-header {
+    background: white;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.expandable-header:hover {
+    border-color: #ffb347;
+}
+
+.expandable-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.expandable-arrow {
+    font-size: 1.2rem;
+    transition: transform 0.3s;
+}
+
+.expandable-arrow.open {
+    transform: rotate(90deg);
+}
+
+.expandable-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    padding: 0 1.5rem;
+}
+
+.expandable-content.open {
+    max-height: 500px;
+    padding: 1rem 1.5rem;
+}
+
+/* Hamburguesas */
+.section-subtitle {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.burger-card {
+    border-radius: 20px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    transition: all 0.2s;
+}
+
+body.dark .burger-card {
+    background: #1a1a1a;
+    border: 1px solid #333;
+}
+
+body.light .burger-card {
+    background: white;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.burger-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+}
+
+.burger-img-container {
+    flex-shrink: 0;
+}
+
+.burger-img {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    object-fit: cover;
+}
+
+.burger-info {
+    flex: 1;
+}
+
+.burger-name {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.burger-stars {
+    color: #ffb347;
+    font-size: 0.85rem;
+}
+
+.burger-expand-btn {
+    font-size: 1.2rem;
+    transition: transform 0.3s;
+    flex-shrink: 0;
+}
+
+.burger-expand-btn.open {
+    transform: rotate(90deg);
+}
+
+.burger-details {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    margin-top: 0;
+}
+
+.burger-details.open {
+    max-height: 300px;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid;
+}
+
+body.dark .burger-details.open {
+    border-top-color: #333;
+}
+
+body.light .burger-details.open {
+    border-top-color: #ddd;
+}
+
+.restaurant-name {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.location {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.85rem;
+    margin-bottom: 0.8rem;
+    opacity: 0.8;
+}
+
+.description {
+    font-size: 0.85rem;
+    line-height: 1.4;
+    margin-bottom: 1rem;
+}
+
+/* Botón de borde */
+.outline-btn {
+    background: transparent;
+    border: 2px solid #ffb347;
+    color: #ffb347;
+    padding: 8px 20px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
+
+.outline-btn:hover {
+    background: #ffb347;
+    color: #1a1a1a;
+}
+
+/* Reseñas */
+.reviews-section {
+    margin-top: 1.5rem;
+}
+
+.review-card {
+    border-radius: 20px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+body.dark .review-card {
+    background: #1a1a1a;
+    border: 1px solid #333;
+}
+
+body.light .review-card {
+    background: white;
+    border: 1px solid #ddd;
+}
+
+.review-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 0.8rem;
+}
+
+.review-avatar {
+    flex-shrink: 0;
+}
+
+.avatar-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.review-info {
+    flex: 1;
+}
+
+.reviewer-name {
+    font-weight: bold;
+}
+
+.reviewer-location {
+    font-size: 0.7rem;
+    opacity: 0.7;
+}
+
+.review-date {
+    font-size: 0.7rem;
+    opacity: 0.6;
+    flex-shrink: 0;
+}
+
+.review-stars {
+    color: #ffb347;
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.review-text {
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .event-hero-title {
+        font-size: 1.5rem;
+    }
+    
+    .burger-name {
+        font-size: 0.95rem;
+    }
+    
+    .burger-img {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .review-header {
+        flex-wrap: wrap;
+    }
+    
+    .review-date {
+        width: 100%;
+        margin-left: 52px;
+    }
+}
