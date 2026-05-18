@@ -1,0 +1,168 @@
+/* Styles for pag_inicial.html */
+
+/* Event Card con imagen de fondo */
+.event-card {
+    background: linear-gradient(135deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.4) 100%), url('../imagenes/hamburguesa.jpg');
+    background-size: cover;
+    background-position: center;
+    border-radius: 25px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    text-align: center;
+    color: white;
+}
+
+.event-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: white;
+}
+
+.event-subtitle {
+    font-size: 1rem;
+    opacity: 0.9;
+    margin-bottom: 1.5rem;
+    color: white;
+}
+
+.event-btn {
+    background: #ffb347;
+    color: #1a1a1a;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 40px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+body.light .event-btn {
+    background: #ffb347;
+    color: #1a1a1a;
+}
+
+.event-btn:hover {
+    transform: scale(1.05);
+}
+
+.section-title {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    font-weight: bold;
+}
+
+.categories-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.category-card {
+    border-radius: 20px;
+    padding: 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+body.dark .category-card {
+    background: #1a1a1a;
+    border: 1px solid #333;
+}
+
+body.light .category-card {
+    background: white;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* Borde naranja al hacer hover */
+.category-card:hover {
+    transform: translateY(-5px);
+    border: 2px solid #ffb347;
+}
+
+/* Categoría seleccionada */
+.category-card.selected {
+    border: 2px solid #ffb347;
+    background: rgba(255, 180, 71, 0.2);
+    transform: scale(1.02);
+}
+
+body.dark .category-card.selected {
+    background: rgba(255, 180, 71, 0.15);
+    border: 2px solid #ffb347;
+    box-shadow: 0 0 15px rgba(255, 180, 71, 0.3);
+}
+
+body.light .category-card.selected {
+    background: rgba(255, 180, 71, 0.1);
+    border: 2px solid #ffb347;
+    box-shadow: 0 0 10px rgba(255, 180, 71, 0.2);
+}
+
+.category-card.selected .category-icon {
+    transform: scale(1.1);
+}
+
+.category-card.selected .category-name {
+    color: #ffb347;
+}
+
+.category-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    transition: transform 0.2s;
+}
+
+.category-name {
+    font-size: 1rem;
+    font-weight: bold;
+    transition: color 0.2s;
+}
+
+.map-btn-container {
+    text-align: center;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+}
+
+.map-btn {
+    background: #ffb347;
+    color: #1a1a1a;
+    border: none;
+    padding: 14px 35px;
+    border-radius: 40px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s;
+    width: 100%;
+    max-width: 300px;
+}
+
+.map-btn:hover {
+    transform: scale(1.02);
+    background: #ffa01e;
+}
+
+@media (max-width: 600px) {
+    .event-card {
+        padding: 1.5rem;
+    }
+    .event-title {
+        font-size: 1.4rem;
+    }
+    .category-card {
+        padding: 1rem;
+    }
+    .category-icon {
+        font-size: 2rem;
+    }
+    .section-title {
+        font-size: 1.1rem;
+    }
+}
