@@ -119,9 +119,9 @@
     <!-- Barra de navegación inferior -->
     <div class="bottom-nav">
         <button class="nav-item" data-page="home" data-i18n="homeIcon">🏠</button>
-        <button class="nav-item" data-page="search" data-i18n="searchIcon">🔍</button>
-        <button class="nav-item active" data-page="profile" data-i18n="profileIcon">👤</button>
+        <button class="nav-item" data-page="map" data-i18n="mapIcon">📍</button>
         <button class="nav-item" data-page="favorites" data-i18n="favoritesIcon">❤️</button>
+        <button class="nav-item active" data-page="profile" data-i18n="profileIcon">👤</button>
     </div>
 
     <script>
@@ -500,19 +500,14 @@
             }
         });
         
-        // ----- NAVEGACIÓN CORREGIDA (sin cambiar data-page) -----
+        // ----- NAVEGACIÓN UNIFICADA -----
         document.querySelectorAll('.nav-item').forEach(btn => {
-            btn.addEventListener('click', (e) => {
+            btn.addEventListener('click', () => {
                 const page = btn.getAttribute('data-page');
-                if (page === 'home') {
-                    window.location.href = 'pag_inicial.html';
-                } else if (page === 'search') {
-                    window.location.href = 'home.html';
-                } else if (page === 'profile') {
-                    window.location.href = 'perfil.html';
-                } else if (page === 'favorites') {
-                    window.location.href = 'favorites.html';
-                }
+                if (page === 'home') window.location.href = 'pag_inicial.html';
+                else if (page === 'map') window.location.href = 'map.html';
+                else if (page === 'profile') window.location.href = 'perfil.html';
+                else if (page === 'favorites') window.location.href = 'favorites.html';
             });
         });
 
