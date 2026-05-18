@@ -1,5 +1,5 @@
-(function(){
-  const platosData = getPlatos();
+(async function(){
+  const platosData = await (window.loadPlatos ? window.loadPlatos() : Promise.resolve(getPlatos()));
 
   const categories = ['All','Breakfast','Lunch','Desserts','Juices','Fast Food','Traditional'];
   const categoryMap = {
