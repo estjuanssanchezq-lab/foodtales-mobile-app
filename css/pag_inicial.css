@@ -2,7 +2,7 @@
 
 /* Event Card con imagen de fondo */
 .event-card {
-    background: linear-gradient(135deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.4) 100%), url('../imagenes/hamburguesa.jpg');
+    background: linear-gradient(135deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.4) 100%), url('../assets/images/hamburguesa.jpg');
     background-size: cover;
     background-position: center;
     border-radius: 25px;
