@@ -93,6 +93,20 @@
   }
   applyMapTheme();
 
+  // collapse bottom sheet when clicking/tapping on the map (but not when clicking inside the sheet)
+  try {
+    const mapContainer = map.getContainer();
+    mapContainer && mapContainer.addEventListener('click', (ev)=>{
+      if (!sheet) return;
+      if (sheet.classList.contains('collapsed')) return;
+      if (sheet.contains(ev.target)) return;
+      if (advancedFilterPanel && advancedFilterPanel.contains(ev.target)) return;
+      sheet.classList.remove('expanded');
+      sheet.classList.add('collapsed');
+      sheet.style.height = '';
+    });
+  } catch(e) { /* ignore if map not ready */ }
+
   if (themeToggle) themeToggle.addEventListener('click', ()=>{
     if (document.body.classList.contains('dark')) { document.body.classList.remove('dark'); document.body.classList.add('light'); localStorage.setItem('foodtales_theme','light'); themeToggle.textContent = '☀️'; currentTheme = 'light'; }
     else { document.body.classList.remove('light'); document.body.classList.add('dark'); localStorage.setItem('foodtales_theme','dark'); themeToggle.textContent = '🌙'; currentTheme = 'dark'; }
@@ -156,8 +170,8 @@
           <div class="plato-stars">${'⭐'.repeat(Math.floor(p.estrellas))} ${p.estrellas}</div>
           <div class="plato-details"><span>📏 ${p.distancia} km</span><span>💰 $${p.precio.toLocaleString()}</span></div>
         </div>
-        <div class="plato-actions"><button class="btn-small start-route" data-id="${p.id}">Ver</button></div>
       `;
+      // make the entire card clickable (tap anywhere to view)
       card.addEventListener('click', ()=>{ map.easeTo({ center:[p.lng,p.lat], zoom:14, offset:[0,-120]}); showPlatoPopup(p); sheet.classList.remove('expanded'); sheet.classList.add('collapsed'); });
       nearbyList.appendChild(card);
     });
@@ -245,7 +259,22 @@
 
   applyFiltersBtn.addEventListener('click', ()=>{ advancedFilterPanel.classList.add('hidden'); applyFiltersAndUpdate(); });
 
-  openFilterBtn.addEventListener('click', ()=>{ advancedFilterPanel.classList.toggle('hidden'); });
+  openFilterBtn.addEventListener('click', ()=>{
+    const isHidden = advancedFilterPanel.classList.contains('hidden');
+    if (!isHidden) {
+      // panel is open, close it
+      advancedFilterPanel.classList.add('hidden');
+      return;
+    }
+    // panel is closed: collapse bottom sheet first (if expanded)
+    if (sheet && sheet.classList.contains('expanded')) {
+      sheet.classList.remove('expanded');
+      sheet.classList.add('collapsed');
+      sheet.style.height = '';
+    }
+    // open the panel after a short delay to allow sheet collapse animation
+    setTimeout(()=>{ advancedFilterPanel.classList.remove('hidden'); }, 220);
+  });
 
   // Close filter panel when clicking outside
   document.addEventListener('click', (e) => {
@@ -272,8 +301,10 @@
       activePointer = ev.pointerId;
       startY = ev.clientY;
       startH = sheet.offsetHeight;
-      sheet.setPointerCapture(activePointer);
+      try { sheetHandle.setPointerCapture(activePointer); } catch(e){}
       sheet.style.transition = 'height 0s';
+      // visual feedback for desktop
+      sheetHandle.classList && sheetHandle.classList.add('dragging');
     });
 
     document.addEventListener('pointermove', (ev)=>{
@@ -289,8 +320,10 @@
     function finishDrag(ev){
       if (!dragging || ev.pointerId !== activePointer) return;
       dragging = false;
-      try { sheet.releasePointerCapture(activePointer); } catch(e){}
+      try { sheetHandle.releasePointerCapture(activePointer); } catch(e){}
       sheet.style.transition = '';
+      // remove dragging cursor
+      sheetHandle.classList && sheetHandle.classList.remove('dragging');
       const currentH = sheet.offsetHeight;
       const threshold = (COLLAPSED_H + getExpandedH()) / 2;
       if (Math.abs(currentH - startH) < 8) {
