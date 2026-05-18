@@ -275,7 +275,7 @@ body.light .input-group textarea {
 }
 
 body.dark .bottom-nav {
-    background-color: rgba(10, 10, 10, 0.9);
+    background-color: rgba(10, 10, 10, 0.95);
     border-top-color: #333;
 }
 
@@ -290,7 +290,6 @@ body.light .bottom-nav {
     border: none;
     cursor: pointer;
     opacity: 0.6;
-    transition: 0.2s;
 }
 
 body.dark .nav-item {
@@ -304,7 +303,6 @@ body.light .nav-item {
 .nav-item.active {
     opacity: 1;
     color: #ffb347;
-    transform: translateY(-3px);
 }
 
 .message {

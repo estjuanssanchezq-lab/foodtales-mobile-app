@@ -58,10 +58,10 @@
 
     <!-- Bottom navigation -->
     <div class="bottom-nav">
-        <button class="nav-item" data-page="inicio">🏠</button>
-        <button class="nav-item" data-page="search">🔍</button>
-        <button class="nav-item" data-page="profile">👤</button>
+        <button class="nav-item active" data-page="home">🏠</button>
+        <button class="nav-item" data-page="map">📍</button>
         <button class="nav-item" data-page="favorites">❤️</button>
+        <button class="nav-item" data-page="profile">👤</button>
     </div>
 
     <script src="../js/data.js"></script>
@@ -116,7 +116,7 @@
         });
         
         document.getElementById('exploreMapBtn').addEventListener('click', () => {
-            alert('🗺️ Próximamente: Mapa interactivo con restaurantes cerca de ti');
+            window.location.href = 'map.html';
         });
         
         // ----- CATEGORÍAS SELECCIONABLES -----
@@ -143,19 +143,14 @@
             });
         });
         
-        // ----- NAVEGACIÓN CORREGIDA -----
+        // ----- NAVEGACIÓN UNIFICADA -----
         document.querySelectorAll('.nav-item').forEach(btn => {
-            btn.addEventListener('click', (e) => {
+            btn.addEventListener('click', () => {
                 const page = btn.getAttribute('data-page');
-                if (page === 'profile') {
-                    window.location.href = 'perfil.html';
-                } else if (page === 'inicio') {
-                    window.location.href = 'pag_inicial.html';
-                } else if (page === 'favorites') {
-                    window.location.href = 'favorites.html';
-                } else if (page === 'search') {
-                    window.location.href = 'home.html';
-                }
+                if (page === 'home') window.location.href = 'pag_inicial.html';
+                else if (page === 'map') window.location.href = 'map.html';
+                else if (page === 'favorites') window.location.href = 'favorites.html';
+                else if (page === 'profile') window.location.href = 'perfil.html';
             });
         });
     </script>

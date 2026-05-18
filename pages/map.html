@@ -84,7 +84,7 @@
 
   <!-- Bottom navigation (keep existing style) -->
   <div class="bottom-nav">
-    <button class="nav-item" data-page="inicio">🏠</button>
+    <button class="nav-item" data-page="home">🏠</button>
     <button class="nav-item active" data-page="map">📍</button>
     <button class="nav-item" data-page="favorites">❤️</button>
     <button class="nav-item" data-page="profile">👤</button>
@@ -93,5 +93,17 @@
   <script src="../js/data.js"></script>
   <script src="https://unpkg.com/maplibre-gl/dist/maplibre-gl.js"></script>
   <script src="../js/map.js"></script>
+  <script>
+    // Unified footer navigation
+    document.querySelectorAll('.nav-item').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const page = btn.getAttribute('data-page');
+        if (page === 'home') window.location.href = 'pag_inicial.html';
+        else if (page === 'map') window.location.href = 'map.html';
+        else if (page === 'favorites') window.location.href = 'favorites.html';
+        else if (page === 'profile') window.location.href = 'perfil.html';
+      });
+    });
+  </script>
 </body>
 </html>
