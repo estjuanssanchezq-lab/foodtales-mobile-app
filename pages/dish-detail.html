@@ -75,9 +75,47 @@
         const platoId = getQueryParam('id');
         const platosData = getPlatos();
         const plato = platosData.find(p => p.id === platoId);
-        
+
+        function normalizeText(text) {
+            return text ? text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase() : '';
+        }
+
+        function getCurrentUserAllergies() {
+            const currentUser = JSON.parse(localStorage.getItem('foodtales_current_user'));
+            if (!currentUser) return [];
+            const users = JSON.parse(localStorage.getItem('foodtales_users')) || [];
+            const user = users.find(u => u.email === currentUser.email);
+            return (user?.profileData?.alergias || []).map(normalizeText).filter(Boolean);
+        }
+
+        function getDishAllergyWarning(plato) {
+            const allergies = getCurrentUserAllergies();
+            if (!allergies.length) return '';
+
+            const ingredients = (plato.ingredientes || []).map(normalizeText);
+            const name = normalizeText(plato.nombre);
+            const found = allergies.filter(allergy => {
+                return ingredients.some(ing => ing.includes(allergy)) || name.includes(allergy);
+            });
+
+            if (found.length) {
+                const uniqueAllergies = [...new Set(found)].join(', ');
+                return `Cuidado: puede contener ${uniqueAllergies}.`;
+            }
+            return '';
+        }
+
+        function checkDishAllergies(plato) {
+            const warning = getDishAllergyWarning(plato);
+            if (!warning) return false;
+            alert(`Cuidado: este plato contiene ingredientes relacionados con tu alergia a ${warning.replace('Cuidado: puede contener ', '')}`);
+            return true;
+        }
+
         if (!plato) {
             document.getElementById('dishContent').innerHTML = '<div style="text-align: center; padding: 3rem;">🍽️ Plato no encontrado<br><button class="map-btn" onclick="window.location.href=\'home.html\'">Volver al inicio</button></div>';
+        } else {
+            checkDishAllergies(plato);
         }
         
         // ----- RENDERIZAR DETALLE -----
@@ -91,6 +129,7 @@
                     <h2>${plato.nombre}</h2>
                     <div class="stars">${'⭐'.repeat(Math.floor(plato.estrellas))} ${plato.estrellas}</div>
                 </div>
+                ${getDishAllergyWarning(plato) ? `<div class="allergy-warning" style="color: #b71c1c; font-weight: 700; margin-bottom: 14px;">⚠️ ${getDishAllergyWarning(plato)}</div>` : ''}
                 <div class="restaurante">🏠 ${plato.restaurante}</div>
                 
                 <div class="info-grid">
@@ -213,6 +252,7 @@
             });
             
             document.getElementById('compareBtn')?.addEventListener('click', () => {
+                checkDishAllergies(plato);
                 // Guardar este plato en localStorage y redirigir a home para elegir segundo
                 localStorage.setItem('foodtales_temp_compare', plato.id);
                 window.location.href = 'home.html?selectCompare=true';
