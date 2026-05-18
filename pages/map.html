@@ -7,12 +7,90 @@
   <title>Food Tales - Map</title>
 
   <link href="https://unpkg.com/maplibre-gl/dist/maplibre-gl.css" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/home.css" />
   <link rel="stylesheet" href="../css/map.css" />
 </head>
 
-<body>
+<body class="dark">
   <div id="map"></div>
 
+  <!-- Top floating filter bar -->
+  <div class="map-topbar">
+    <div class="chips-wrapper" id="chipsWrapper" aria-label="Category filters">
+      <!-- chips generated dynamically for horizontal scroll -->
+    </div>
+
+    <div class="topbar-right">
+      <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">🌙</button>
+      <button id="openFilterBtn" class="icon-btn filter-icon" aria-label="Open filters">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3 5h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="20" cy="5" r="1.5" fill="currentColor" />
+          <path d="M3 12h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="16" cy="12" r="1.5" fill="currentColor" />
+          <path d="M3 19h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="9" cy="19" r="1.5" fill="currentColor" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Advanced filter panel (compact) -->
+  <div id="advancedFilterPanel" class="filter-panel hidden">
+    <div class="filter-row">
+      <label>🧂 Sabor</label>
+      <div style="display:flex;flex-direction:column;align-items:flex-start;gap:6px;">
+        <input type="range" id="flavorRange" min="1" max="10" value="5">
+        <div class="flavor-scale"><span>Salado</span><span>🌶️</span><span>Dulce</span></div>
+      </div>
+    </div>
+    <div class="filter-row">
+      <label>⏱️ Tiempo máximo (min)</label>
+      <input type="number" id="timeMax" min="5" max="240" value="60">
+    </div>
+    <div class="filter-row">
+      <label>💰 Precio máximo (COP)</label>
+      <input type="number" id="priceMax" min="1000" step="1000" value="50000">
+    </div>
+    <div class="filter-row">
+      <label>📏 Distancia máxima (km)</label>
+      <input type="number" id="distanceMax" min="0.1" step="0.1" value="10">
+    </div>
+    <div class="filter-row">
+      <label>⭐ Calificación mínima</label>
+      <select id="minRating">
+        <option value="0">Todas</option>
+        <option value="4">4+</option>
+        <option value="4.5">4.5+</option>
+      </select>
+    </div>
+    <div class="filter-actions">
+      <button id="applyFilters" class="btn-primary" aria-label="Aplicar filtros">🔍 Aplicar filtros</button>
+    </div>
+  </div>
+
+  <!-- Bottom sheet -->
+  <div id="bottomSheet" class="bottom-sheet collapsed">
+    <div id="sheetHandle" class="sheet-handle"></div>
+    <div class="sheet-tabs">
+      <button class="sheet-tab active" data-tab="nearby">Nearby Dishes</button>
+      <button class="sheet-tab" data-tab="routes">Explore Routes</button>
+    </div>
+    <div class="sheet-body">
+      <div id="nearbyList" class="nearby-list"></div>
+      <div id="routesList" class="routes-list hidden"></div>
+    </div>
+  </div>
+
+  <!-- Bottom navigation (keep existing style) -->
+  <div class="bottom-nav">
+    <button class="nav-item" data-page="inicio">🏠</button>
+    <button class="nav-item active" data-page="map">📍</button>
+    <button class="nav-item" data-page="favorites">❤️</button>
+    <button class="nav-item" data-page="profile">👤</button>
+  </div>
+
+  <script src="../js/data.js"></script>
   <script src="https://unpkg.com/maplibre-gl/dist/maplibre-gl.js"></script>
   <script src="../js/map.js"></script>
 </body>
