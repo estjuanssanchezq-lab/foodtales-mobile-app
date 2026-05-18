@@ -79,6 +79,7 @@
 
     <script src="../js/data.js"></script>
     <script>
+    (async function(){
         // ----- TEMA OSCURO/CLARO -----
         const themeToggle = document.getElementById('themeToggle');
         const body = document.body;
@@ -161,7 +162,7 @@
         }
 
         // ----- VARIABLES GLOBALES -----
-        let platosData = getPlatos();
+        let platosData = await window.loadPlatos();
         let selectedForCompare = []; // Array de IDs para comparar
         
         // ----- FILTRADO DE PLATOS -----
@@ -310,6 +311,7 @@
             document.getElementById(id).addEventListener('change', () => renderPlatos());
             document.getElementById(id).addEventListener('input', () => renderPlatos());
         });
+    })();
     </script>
 </body>
 </html>

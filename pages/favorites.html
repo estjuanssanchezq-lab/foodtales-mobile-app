@@ -37,6 +37,7 @@
 
     <script src="../js/data.js"></script>
     <script>
+    (async function(){
         // ----- TEMA OSCURO/CLARO -----
         const themeToggle = document.getElementById('themeToggle');
         const body = document.body;
@@ -71,11 +72,11 @@
         loadTheme();
         
         // ----- OBTENER FAVORITOS -----
-        const platosData = getPlatos();
+        const platosData = await window.loadPlatos();
         
         function getFavoritosPlatos() {
             const favoritosIds = getFavoritos();
-            return platosData.filter(plato => favoritosIds.includes(plato.id));
+            return (platosData || []).filter(plato => favoritosIds.includes(plato.id));
         }
         
         function verDetalle(id) {
@@ -157,6 +158,7 @@
                 else if (page === 'profile') window.location.href = 'perfil.html';
             });
         });
+    })();
     </script>
 </body>
 </html>

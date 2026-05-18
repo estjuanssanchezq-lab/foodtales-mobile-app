@@ -7,17 +7,9 @@
     <link rel="stylesheet" href="../css/dish-detail.css">
 </head>
 <body class="dark">
-    <div class="container">
-        <div class="header">
-            <div class="logo">
-                <h1>🍜 FoodTales</h1>
-            </div>
-            <div class="action-buttons">
-                <button class="theme-toggle" id="themeToggle">🌙</button>
-                <button class="back-btn" id="backBtn">← Volver</button>
-            </div>
-        </div>
+    <div id="dishHeroRoot"></div>
 
+    <div class="container">
         <div id="dishContent">
             <!-- El contenido se carga dinámicamente -->
             <div style="text-align: center; padding: 3rem;">Cargando...</div>
@@ -31,50 +23,55 @@
         <button class="nav-item" data-page="profile">👤</button>
     </div>
 
+    <!-- Toast (se muestra al guardar en favoritos) -->
+    <div id="toast" class="toast" aria-hidden="true">Guardado en Favoritos</div>
+
     <script src="../js/data.js"></script>
     <script>
-        // ----- TEMA OSCURO/CLARO -----
-        const themeToggle = document.getElementById('themeToggle');
+    (async function(){
         const body = document.body;
-        
+
         function loadTheme() {
             const savedTheme = localStorage.getItem('foodtales_theme');
             if (savedTheme === 'light') {
                 body.classList.remove('dark');
                 body.classList.add('light');
-                themeToggle.textContent = '☀️';
             } else {
                 body.classList.remove('light');
                 body.classList.add('dark');
-                themeToggle.textContent = '🌙';
             }
         }
-        
-        themeToggle.addEventListener('click', () => {
-            if (body.classList.contains('dark')) {
-                body.classList.remove('dark');
-                body.classList.add('light');
-                localStorage.setItem('foodtales_theme', 'light');
-                themeToggle.textContent = '☀️';
-            } else {
-                body.classList.remove('light');
-                body.classList.add('dark');
-                localStorage.setItem('foodtales_theme', 'dark');
-                themeToggle.textContent = '🌙';
-            }
-        });
-        
+
+        function initThemeToggle() {
+            const themeToggleEl = document.getElementById('themeToggle');
+            if (!themeToggleEl) return;
+            themeToggleEl.textContent = body.classList.contains('light') ? '☀️' : '🌙';
+            themeToggleEl.addEventListener('click', () => {
+                if (body.classList.contains('dark')) {
+                    body.classList.remove('dark');
+                    body.classList.add('light');
+                    localStorage.setItem('foodtales_theme', 'light');
+                    themeToggleEl.textContent = '☀️';
+                } else {
+                    body.classList.remove('light');
+                    body.classList.add('dark');
+                    localStorage.setItem('foodtales_theme', 'dark');
+                    themeToggleEl.textContent = '🌙';
+                }
+            });
+        }
+
         loadTheme();
-        
+
         // ----- OBTENER ID DEL PLATO DESDE URL -----
         function getQueryParam(param) {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get(param);
         }
-        
+
         const platoId = getQueryParam('id');
-        const platosData = getPlatos();
-        const plato = platosData.find(p => p.id === platoId);
+        const platosData = await window.loadPlatos();
+        const plato = (platosData || []).find(p => p.id === platoId);
 
         function normalizeText(text) {
             return text ? text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase() : '';
@@ -113,95 +110,138 @@
         }
 
         if (!plato) {
-            document.getElementById('dishContent').innerHTML = '<div style="text-align: center; padding: 3rem;">🍽️ Plato no encontrado<br><button class="map-btn" onclick="window.location.href=\'home.html\'">Volver al inicio</button></div>';
+            document.getElementById('dishContent').innerHTML = '<div style="text-align: center; padding: 3rem;">🍽️ Plato no encontrado<br><button class="map-btn" onclick="window.location.href=\'pag_inicial.html\'">Volver al inicio</button></div>';
         } else {
             checkDishAllergies(plato);
         }
-        
-        // ----- RENDERIZAR DETALLE -----
+
+        // Toast helper
+        function showToast(message = 'Guardado en Favoritos') {
+            const toast = document.getElementById('toast');
+            if (!toast) return;
+            toast.textContent = message;
+            toast.setAttribute('aria-hidden', 'false');
+            toast.classList.remove('show');
+            // force reflow
+            void toast.offsetWidth;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+                toast.setAttribute('aria-hidden', 'true');
+            }, 2400);
+        }
+
+        // ----- RENDERIZAR DETALLE (diseño nuevo, imagen como hero) -----
         function renderDetalle() {
             const favoritoActual = isFavorito(plato.id);
-            
-            const html = `
-                <img class="main-img" src="${plato.imagen}" alt="${plato.nombre}" onerror="this.src='https://placehold.co/600x300?text=${plato.nombre}'">
-                
-                <div class="title-section">
-                    <h2>${plato.nombre}</h2>
-                    <div class="stars">${'⭐'.repeat(Math.floor(plato.estrellas))} ${plato.estrellas}</div>
-                </div>
-                ${getDishAllergyWarning(plato) ? `<div class="allergy-warning" style="color: #b71c1c; font-weight: 700; margin-bottom: 14px;">⚠️ ${getDishAllergyWarning(plato)}</div>` : ''}
-                <div class="restaurante">🏠 ${plato.restaurante}</div>
-                
-                <div class="info-grid">
-                    <div class="info-card">
-                        <div class="emoji">📏</div>
-                        <div class="label">Distancia</div>
-                        <div class="value">${plato.distancia} km</div>
-                        <div class="label">🚶 ${plato.tiempoCaminando} min caminando</div>
+
+            const heroHtml = `
+                <div class="dish-hero" aria-label="${plato.nombre}">
+                    <img class="dish-hero-image" src="${plato.imagen}" alt="${plato.nombre}" onerror="this.src='https://placehold.co/800x600?text=${encodeURIComponent(plato.nombre)}'">
+                    <div class="dish-hero-gradient"></div>
+
+                    <div class="hero-controls">
+                        <button class="btn-circle back-button" id="backHeroBtn" aria-label="Volver">←</button>
+                        <div class="hero-controls-right">
+                            <button class="btn-circle favorite-button ${favoritoActual ? 'active' : ''}" id="favHeroBtn" aria-label="Guardar">${favoritoActual ? '❤️' : '🤍'}</button>
+                            <button class="btn-circle" id="themeToggle" aria-label="Alternar tema">🌙</button>
+                        </div>
                     </div>
-                    <div class="info-card">
-                        <div class="emoji">💰</div>
-                        <div class="label">Precio</div>
-                        <div class="value">$${plato.precio.toLocaleString()} ${plato.moneda}</div>
-                    </div>
-                    <div class="info-card">
-                        <div class="emoji">⏱️</div>
-                        <div class="label">Preparación</div>
-                        <div class="value">${plato.tiempoPreparacion} min</div>
-                    </div>
-                    <div class="info-card">
-                        <div class="emoji">🧂</div>
-                        <div class="label">Sabor</div>
-                        <div class="value">${plato.sabor <= 3 ? 'Salado' : plato.sabor >= 7 ? 'Dulce' : 'Equilibrado'}</div>
+
+                    <div class="dish-hero-content">
+                        <h1 class="dish-title">${plato.nombre}</h1>
+                        <div class="dish-meta-row">
+                            <span class="meta-item">🏠 ${plato.restaurante}</span>
+                            <span class="meta-item">📍 ${plato.distancia} km</span>
+                            <span class="meta-item">⏱️ ${plato.tiempoCaminando} min</span>
+                            <span class="meta-item">💵 ${plato.moneda || ''} ${plato.precio.toLocaleString()}</span>
+                        </div>
+
+                        <div class="hero-ctas">
+                            <button class="cta-primary" id="goTryBtn">↗ Go Try This</button>
+                            <div class="cta-secondary-row">
+                                <button class="cta-secondary" id="viewMapBtn">📍 View on Map</button>
+                                <button class="cta-secondary" id="comparePlacesBtn">↔ Compare Places</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                
-                <!-- Restaurante y mapa -->
-                <div class="section">
+            `;
+
+            const contentHtml = `
+                ${getDishAllergyWarning(plato) ? `<div class="allergy-warning">⚠️ ${getDishAllergyWarning(plato)}</div>` : ''}
+
+                <div class="restaurant-card">
                     <h3>📍 Restaurante</h3>
                     <p><strong>${plato.restaurante}</strong><br>${plato.direccion}</p>
                     <div class="map-placeholder">
-                        <span>🗺️ Mapa interactivo</span>
+                        <span>🗺️ Mapa</span>
                         <button class="map-btn" id="openMapsBtn">Abrir en Google Maps →</button>
                         <small>${plato.distancia} km de distancia (${plato.tiempoCaminando} min a pie)</small>
                     </div>
-                    <div class="info-card" style="margin-top: 10px;">
-                        <div class="emoji">🕒</div>
-                        <div class="label">Horario de atención</div>
-                        <div class="value">${plato.horarios}</div>
-                    </div>
-                </div>
-                
-                <!-- Historia y video -->
-                <div class="section">
-                    <h3>📖 Historia del plato</h3>
-                    <p>${plato.historia}</p>
-                    ${plato.videoUrl ? `
-                        <div class="video-container">
-                            <iframe src="${plato.videoUrl}" frameborder="0" allowfullscreen></iframe>
+                    <div class="info-grid" style="margin-top:10px;">
+                        <div class="info-card">
+                            <div class="emoji">🕒</div>
+                            <div class="label">Horario</div>
+                            <div class="value">${plato.horarios}</div>
                         </div>
-                    ` : '<small>🎥 Video no disponible</small>'}
-                </div>
-                
-                <!-- Ingredientes -->
-                <div class="section">
-                    <h3>🥘 Ingredientes</h3>
-                    <div class="ingredientes-list">
-                        ${plato.ingredientes.map(ing => `<span class="ingrediente-chip">${ing}</span>`).join('')}
                     </div>
                 </div>
-                
-                <!-- Datos curiosos -->
-                <div class="section">
-                    <h3>✨ Datos curiosos</h3>
-                    <ul class="curiosidades">
-                        ${plato.datosCuriosos.map(dato => `<li>📌 ${dato}</li>`).join('')}
-                    </ul>
+
+                <div class="featured-card">
+                    <div class="featured-header">📺 Mira y Aprende</div>
+                    ${plato.videoUrl ? `
+                        <div class="featured-media">
+                            <a href="${plato.videoUrl}" target="_blank" rel="noopener noreferrer">
+                                <img src="${plato.imagen}" alt="video preview">
+                                <div class="play-overlay">▶</div>
+                            </a>
+                        </div>
+                    ` : `
+                        <div class="featured-media">
+                            <img src="${plato.imagen}" alt="${plato.nombre}">
+                        </div>
+                    `}
+                    <div class="featured-actions">
+                        <button class="btn-outline">Watch</button>
+                        <button class="btn-outline">Audio</button>
+                    </div>
                 </div>
-                
-                <!-- Reviews -->
-                <div class="section">
-                    <h3>💬 Lo que opinan los comensales</h3>
+
+                <div class="accordion" id="acc-historia">
+                    <button class="accordion-toggle" aria-expanded="false">
+                        <span class="accordion-title">📖 Historia del plato</span>
+                        <span class="accordion-icon">˅</span>
+                    </button>
+                    <div class="accordion-panel"><p>${plato.historia}</p></div>
+                </div>
+
+                <div class="accordion" id="acc-ingredientes">
+                    <button class="accordion-toggle" aria-expanded="false">
+                        <span class="accordion-title">🥘 Ingredientes</span>
+                        <span class="accordion-icon">˅</span>
+                    </button>
+                    <div class="accordion-panel">
+                        <div class="ingredientes-list">
+                            ${plato.ingredientes.map(ing => `<span class="ingrediente-chip">${ing}</span>`).join('')}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion" id="acc-datos">
+                    <button class="accordion-toggle" aria-expanded="false">
+                        <span class="accordion-title">💡 Datos curiosos</span>
+                        <span class="accordion-icon">˅</span>
+                    </button>
+                    <div class="accordion-panel">
+                        <ul class="curiosidades">
+                            ${plato.datosCuriosos.map(dato => `<li>📌 ${dato}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="reviews-card">
+                    <h3>⭐ Lo que opinan los comensales</h3>
                     ${plato.reviews.map(review => `
                         <div class="review">
                             <div class="review-header">
@@ -213,59 +253,76 @@
                         </div>
                     `).join('')}
                 </div>
-                
-                <!-- Botones de acción -->
-                <div class="action-buttons-bottom">
-                    <button class="btn-action btn-favorite" id="favoriteBtn">
-                        ${favoritoActual ? '❤️  Quitar de favoritos' : '🤍 Guardar para más tarde'}
-                    </button>
-                    <button class="btn-action btn-compare" id="compareBtn">
-                        📊 Comparar con otro
-                    </button>
-                    <button class="btn-action btn-directions" id="directionsBtn">
-                        🗺️ Iniciar ruta
-                    </button>
-                </div>
             `;
-            
-            document.getElementById('dishContent').innerHTML = html;
-            
-            // Eventos dinámicos
+
+            // inject hero separately (outside the constrained container)
+            const heroRoot = document.getElementById('dishHeroRoot');
+            if (heroRoot) heroRoot.innerHTML = heroHtml;
+            // attach theme toggle after hero exists
+            initThemeToggle();
+
+            document.getElementById('dishContent').innerHTML = contentHtml;
+
+            // Eventos dinámicos (CTAs)
+            document.getElementById('goTryBtn')?.addEventListener('click', () => {
+                const url = `https://www.google.com/maps/dir/?api=1&destination=${plato.lat},${plato.lng}`;
+                window.open(url, '_blank');
+            });
+
+            document.getElementById('viewMapBtn')?.addEventListener('click', () => {
+                window.location.href = `map.html?dish=${plato.id}`;
+            });
+
+            document.getElementById('comparePlacesBtn')?.addEventListener('click', () => {
+                window.location.href = `compare.html?dish=${plato.id}`;
+            });
+
             document.getElementById('openMapsBtn')?.addEventListener('click', () => {
                 const url = `https://www.google.com/maps/search/?api=1&query=${plato.lat},${plato.lng}`;
                 window.open(url, '_blank');
             });
-            
-            document.getElementById('directionsBtn')?.addEventListener('click', () => {
-                const url = `https://www.google.com/maps/dir/?api=1&destination=${plato.lat},${plato.lng}`;
-                window.open(url, '_blank');
-            });
-            
-            document.getElementById('favoriteBtn')?.addEventListener('click', () => {
+
+            // Floating favorite button (top-right)
+            document.getElementById('favHeroBtn')?.addEventListener('click', () => {
+                const favBtn = document.getElementById('favHeroBtn');
                 if (isFavorito(plato.id)) {
                     removeFavorito(plato.id);
-                    document.getElementById('favoriteBtn').innerHTML = '🤍 Guardar para más tarde';
+                    if (favBtn) favBtn.textContent = '🤍';
                 } else {
                     addFavorito(plato.id);
-                    document.getElementById('favoriteBtn').innerHTML = '❤️ Quitar de favoritos';
+                    if (favBtn) { favBtn.textContent = '❤️'; favBtn.classList.add('active'); }
+                    showToast('Guardado en Favoritos');
                 }
             });
-            
-            document.getElementById('compareBtn')?.addEventListener('click', () => {
-                checkDishAllergies(plato);
-                // Guardar este plato en localStorage y redirigir a home para elegir segundo
-                localStorage.setItem('foodtales_temp_compare', plato.id);
-                window.location.href = 'home.html?selectCompare=true';
+
+            // Back button (floating)
+            document.getElementById('backHeroBtn')?.addEventListener('click', () => {
+                window.history.back();
+            });
+
+            // Accordions: smooth toggle
+            document.querySelectorAll('.accordion').forEach(acc => {
+                const btn = acc.querySelector('.accordion-toggle');
+                const panel = acc.querySelector('.accordion-panel');
+                panel.style.maxHeight = '0px';
+                btn.addEventListener('click', () => {
+                    const open = acc.classList.toggle('open');
+                    if (open) {
+                        panel.style.maxHeight = panel.scrollHeight + 'px';
+                        acc.querySelector('.accordion-icon').style.transform = 'rotate(180deg)';
+                        btn.setAttribute('aria-expanded', 'true');
+                    } else {
+                        panel.style.maxHeight = '0px';
+                        acc.querySelector('.accordion-icon').style.transform = 'rotate(0deg)';
+                        btn.setAttribute('aria-expanded', 'false');
+                    }
+                });
             });
         }
-        
-        if (plato) renderDetalle();
-        
-        // ----- NAVEGACIÓN -----
-        document.getElementById('backBtn').addEventListener('click', () => {
-            window.location.href = 'home.html';
-        });
-        
+
+            if (plato) renderDetalle();
+
+        // ----- NAVEGACIÓN del footer -----
         document.querySelectorAll('.nav-item').forEach(btn => {
             btn.addEventListener('click', () => {
                 const page = btn.getAttribute('data-page');
@@ -275,6 +332,7 @@
                 else if (page === 'profile') window.location.href = 'perfil.html';
             });
         });
+    })();
     </script>
 </body>
 </html>
