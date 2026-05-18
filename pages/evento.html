@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>FoodTales - Burger Master 2026</title>
+    <link rel="stylesheet" href="../css/home.css">
+    <link rel="stylesheet" href="../css/evento.css">
+</head>
+<body class="dark">
+    <div class="container">
+        <div class="header">
+            <div class="logo" style="display: flex; align-items: center;">
+                <button class="back-btn" id="backBtn">←</button>
+                <div>
+                    <h1>🍔 Burger Master 2026</h1>
+                    <p>El festival de hamburguesas más grande</p>
+                </div>
+            </div>
+            <div class="user-info">
+                <span id="userNameDisplay"></span>
+                <button class="theme-toggle" id="themeToggle">🌙</button>
+            </div>
+        </div>
+
+        <!-- Hero con imagen -->
+        <div class="event-hero">
+            <div class="event-date">
+                <span>📅</span> 20 de abril de 2026 – 26 de abril de 2026
+            </div>
+            <div class="event-hero-title">Burger Master 2026</div>
+            <div class="event-hero-subtitle">Descubre las mejores hamburguesas de Bogotá</div>
+        </div>
+
+        <!-- About the Event -->
+        <div class="info-card">
+            <div class="info-card-title">📖 Sobre el Evento</div>
+            <div class="info-card-text">
+                Una competencia en toda la ciudad donde los mejores restaurantes compiten para crear la mejor hamburguesa de Bogotá. 
+                Experimenta sabores únicos, combinaciones creativas e ingredientes auténticos colombianos transformados en hamburguesas extraordinarias. 
+                ¡Vota por tu favorita y ayuda a coronar al Ultimate Burger Master!
+            </div>
+        </div>
+
+        <!-- History & Culture expandible -->
+        <div class="expandable-section">
+            <div class="expandable-header" id="historyHeader">
+                <span class="expandable-title">📜 History & Culture</span>
+                <span class="expandable-arrow" id="historyArrow">▶</span>
+            </div>
+            <div class="expandable-content" id="historyContent">
+                <div class="info-card-text">
+                    <strong>History & Culture</strong><br><br>
+                    Burger Master comenzó en 2018 como una pequeña reunión de cinco restaurantes locales en La Candelaria. 
+                    Lo que empezó como una competencia amistosa entre chefs rápidamente se convirtió en uno de los eventos 
+                    gastronómicos más esperados de Bogotá. Cada año, los restaurantes participantes crean recetas exclusivas 
+                    de hamburguesas que combinan técnicas internacionales con ingredientes colombianos como chicharrón crujiente, 
+                    salsa hogao y pan de arepa.<br><br>
+                    <strong>Importancia Cultural</strong><br><br>
+                    El evento se ha convertido en un símbolo de la evolución de la escena gastronómica de Bogotá, donde los 
+                    sabores tradicionales colombianos se encuentran con las tendencias culinarias globales. Celebra el emprendimiento 
+                    local y ha ayudado a lanzar las carreras de muchos jóvenes chefs. Hoy, Burger Master atrae a más de 50,000 
+                    amantes de la comida anualmente y ha inspirado eventos similares en toda América Latina.
+                </div>
+            </div>
+        </div>
+
+        <!-- Event Burgers (6) -->
+        <div class="section-subtitle">🍔 Hamburguesas del Evento (6)</div>
+
+        <!-- Burger 1 - Paisa Power Burger -->
+        <div class="burger-card">
+            <div class="burger-header" data-burger="1">
+                <div class="burger-img-container">
+                    <img class="burger-img" src="../imagenes/burgers/paisa-power.jpg" alt="Paisa Power Burger" onerror="this.src='https://placehold.co/60x60?text=🍔'">
+                </div>
+                <div class="burger-info">
+                    <div class="burger-name">Paisa Power Burger</div>
+                    <div class="burger-stars">⭐⭐⭐⭐⭐ 4.9</div>
+                </div>
+                <span class="burger-expand-btn" id="burgerArrow1">▶</span>
+            </div>
+            <div class="burger-details" id="burgerDetails1">
+                <div class="restaurant-name">Disponible en: La Hamburguesería</div>
+                <div class="location">📍 Carrera 7 #25-14, La Candelaria</div>
+                <div class="description">Angus beef, chicharrón crujiente, hogao, aguacate y queso costeño en pan de arepa</div>
+                <button class="outline-btn" onclick="verEnMapa('La Hamburguesería')">Ver en el mapa</button>
+            </div>
+        </div>
+
+        <!-- Burger 2 - Molecular Cheese Explosion -->
+        <div class="burger-card">
+            <div class="burger-header" data-burger="2">
+                <div class="burger-img-container">
+                    <img class="burger-img" src="../imagenes/burgers/molecular-cheese.jpg" alt="Molecular Cheese Explosion" onerror="this.src='https://placehold.co/60x60?text=🧀'">
+                </div>
+                <div class="burger-info">
+                    <div class="burger-name">Molecular Cheese Explosion</div>
+                    <div class="burger-stars">⭐⭐⭐⭐⭐ 4.8</div>
+                </div>
+                <span class="burger-expand-btn" id="burgerArrow2">▶</span>
+            </div>
+            <div class="burger-details" id="burgerDetails2">
+                <div class="restaurant-name">Disponible en: El Cielo</div>
+                <div class="location">📍 Calle 70 # 10-23, Zona Rosa</div>
+                <div class="description">Centro de queso líquido molecular, carne angus, cebolla caramelizada y pan brioche</div>
+                <button class="outline-btn" onclick="verEnMapa('El Cielo')">Ver en el mapa</button>
+            </div>
+        </div>
+
+        <!-- Burger 3 - Lechona Burger -->
+        <div class="burger-card">
+            <div class="burger-header" data-burger="3">
+                <div class="burger-img-container">
+                    <img class="burger-img" src="../imagenes/burgers/lechona.jpg" alt="Lechona Burger" onerror="this.src='https://placehold.co/60x60?text=🐷'">
+                </div>
+                <div class="burger-info">
+                    <div class="burger-name">Lechona Burger</div>
+                    <div class="burger-stars">⭐⭐⭐⭐⭐ 4.7</div>
+                </div>
+                <span class="burger-expand-btn" id="burgerArrow3">▶</span>
+            </div>
+            <div class="burger-details" id="burgerDetails3">
+                <div class="restaurant-name">Disponible en: Mestizo</div>
+                <div class="location">📍 Carrera 13 # 85-34, Chapinero</div>
+                <div class="description">Lechona crujiente, arroz de cebada, salsa de ají y pan artesanal</div>
+                <button class="outline-btn" onclick="verEnMapa('Mestizo')">Ver en el mapa</button>
+            </div>
+        </div>
+
+        <!-- Burger 4 - Ajiaco Burger -->
+        <div class="burger-card">
+            <div class="burger-header" data-burger="4">
+                <div class="burger-img-container">
+                    <img class="burger-img" src="../imagenes/burgers/ajiaco.jpg" alt="Ajiaco Burger" onerror="this.src='https://placehold.co/60x60?text=🍲'">
+                </div>
+                <div class="burger-info">
+                    <div class="burger-name">Ajiaco Burger</div>
+                    <div class="burger-stars">⭐⭐⭐⭐⭐ 4.8</div>
+                </div>
+                <span class="burger-expand-btn" id="burgerArrow4">▶</span>
+            </div>
+            <div class="burger-details" id="burgerDetails4">
+                <div class="restaurant-name">Disponible en: La Puerta Falsa</div>
+                <div class="location">📍 Calle 11 # 6-50, La Candelaria</div>
+                <div class="description">Pollo desmechado, papas criollas, guascas, alcaparras y crema de leche en pan de maíz</div>
+                <button class="outline-btn" onclick="verEnMapa('La Puerta Falsa')">Ver en el mapa</button>
+            </div>
+        </div>
+
+        <!-- Burger 5 - Amazonian Wild Burger -->
+        <div class="burger-card">
+            <div class="burger-header" data-burger="5">
+                <div class="burger-img-container">
+                    <img class="burger-img" src="../imagenes/burgers/amazonian-wild.jpg" alt="Amazonian Wild Burger" onerror="this.src='https://placehold.co/60x60?text=🌿'">
+                </div>
+                <div class="burger-info">
+                    <div class="burger-name">Amazonian Wild Burger</div>
+                    <div class="burger-stars">⭐⭐⭐⭐⭐ 4.9</div>
+                </div>
+                <span class="burger-expand-btn" id="burgerArrow5">▶</span>
+            </div>
+            <div class="burger-details" id="burgerDetails5">
+                <div class="restaurant-name">Disponible en: Origen</div>
+                <div class="location">📍 Carrera 12 # 93-12, Usaquén</div>
+                <div class="description">Jabalí, frutas exóticas amazónicas (copuazú, camu camu), yuca frita y pan de plátano</div>
+                <button class="outline-btn" onclick="verEnMapa('Origen')">Ver en el mapa</button>
+            </div>
+        </div>
+
+        <!-- Burger 6 - BBQ Costilla Burger -->
+        <div class="burger-card">
+            <div class="burger-header" data-burger="6">
+                <div class="burger-img-container">
+                    <img class="burger-img" src="../imagenes/burgers/bbq-costilla.jpg" alt="BBQ Costilla Burger" onerror="this.src='https://placehold.co/60x60?text=🥩'">
+                </div>
+                <div class="burger-info">
+                    <div class="burger-name">BBQ Costilla Burger</div>
+                    <div class="burger-stars">⭐⭐⭐⭐⭐ 4.6</div>
+                </div>
+                <span class="burger-expand-btn" id="burgerArrow6">▶</span>
+            </div>
+            <div class="burger-details" id="burgerDetails6">
+                <div class="restaurant-name">Disponible en: El Corral Gourmet</div>
+                <div class="location">📍 Calle 85 # 15-28, Chicó</div>
+                <div class="description">Costilla desmechada en BBQ artesanal, aros de cebolla, queso ahumado y pan de papa</div>
+                <button class="outline-btn" onclick="verEnMapa('El Corral Gourmet')">Ver en el mapa</button>
+            </div>
+        </div>
+
+        <!-- Tourist Reviews -->
+        <div class="reviews-section">
+            <div class="section-subtitle">⭐ Reseñas de Visitantes</div>
+
+            <div class="review-card">
+                <div class="review-header">
+                    <div class="review-avatar">
+                        <img class="avatar-img" src="../imagenes/avatars/michael-chen.jpg" alt="Michael Chen" onerror="this.src='https://placehold.co/40x40?text=MC'">
+                    </div>
+                    <div class="review-info">
+                        <div class="reviewer-name">Michael Chen</div>
+                        <div class="reviewer-location">🌍 Singapur</div>
+                    </div>
+                    <div class="review-date">21 de abril de 2026</div>
+                </div>
+                <div class="review-stars">⭐⭐⭐⭐⭐ 5.0</div>
+                <div class="review-text">¡La Paisa Power Burger fue increíble! Nunca pensé que los ingredientes colombianos pudieran funcionar tan bien en una hamburguesa. ¡El pan de arepa fue un cambio total!</div>
+            </div>
+
+            <div class="review-card">
+                <div class="review-header">
+                    <div class="review-avatar">
+                        <img class="avatar-img" src="../imagenes/avatars/sophie-dubois.jpg" alt="Sophie Dubois" onerror="this.src='https://placehold.co/40x40?text=SD'">
+                    </div>
+                    <div class="review-info">
+                        <div class="reviewer-name">Sophie Dubois</div>
+                        <div class="reviewer-location">🌍 Francia</div>
+                    </div>
+                    <div class="review-date">22 de abril de 2026</div>
+                </div>
+                <div class="review-stars">⭐⭐⭐⭐⭐ 5.0</div>
+                <div class="review-text">La hamburguesa molecular de El Cielo es puro arte. ¡La explosión de queso líquido en el centro fue inolvidable! Vale cada peso.</div>
+            </div>
+
+            <div class="review-card">
+                <div class="review-header">
+                    <div class="review-avatar">
+                        <img class="avatar-img" src="../imagenes/avatars/james-anderson.jpg" alt="James Anderson" onerror="this.src='https://placehold.co/40x40?text=JA'">
+                    </div>
+                    <div class="review-info">
+                        <div class="reviewer-name">James Anderson</div>
+                        <div class="reviewer-location">🌍 Australia</div>
+                    </div>
+                    <div class="review-date">20 de abril de 2026</div>
+                </div>
+                <div class="review-stars">⭐⭐⭐⭐⭐ 5.0</div>
+                <div class="review-text">Vine a Bogotá solo por Burger Master y no me decepcionó. ¡La Lechona Burger de Mestizo me voló la cabeza!</div>
+            </div>
+
+            <div class="review-card">
+                <div class="review-header">
+                    <div class="review-avatar">
+                        <img class="avatar-img" src="../imagenes/avatars/ana-rodriguez.jpg" alt="Ana Rodríguez" onerror="this.src='https://placehold.co/40x40?text=AR'">
+                    </div>
+                    <div class="review-info">
+                        <div class="reviewer-name">Ana Rodríguez</div>
+                        <div class="reviewer-location">🌍 España</div>
+                    </div>
+                    <div class="review-date">23 de abril de 2026</div>
+                </div>
+                <div class="review-stars">⭐⭐⭐⭐ 4.0</div>
+                <div class="review-text">¡La Ajiaco Burger es genial! Es como comer sopa tradicional colombiana en forma de hamburguesa. Creativa y deliciosa.</div>
+            </div>
+
+            <div class="review-card">
+                <div class="review-header">
+                    <div class="review-avatar">
+                        <img class="avatar-img" src="../imagenes/avatars/david-kim.jpg" alt="David Kim" onerror="this.src='https://placehold.co/40x40?text=DK'">
+                    </div>
+                    <div class="review-info">
+                        <div class="reviewer-name">David Kim</div>
+                        <div class="reviewer-location">🌍 Corea del Sur</div>
+                    </div>
+                    <div class="review-date">21 de abril de 2026</div>
+                </div>
+                <div class="review-stars">⭐⭐⭐⭐⭐ 5.0</div>
+                <div class="review-text">La Amazonian Wild Burger de Origen es otro nivel. Jabalí + frutas exóticas = explosión de sabor. ¡El mejor evento en Bogotá!</div>
+            </div>
+
+            <div class="review-card">
+                <div class="review-header">
+                    <div class="review-avatar">
+                        <img class="avatar-img" src="../imagenes/avatars/emma-wilson.jpg" alt="Emma Wilson" onerror="this.src='https://placehold.co/40x40?text=EW'">
+                    </div>
+                    <div class="review-info">
+                        <div class="reviewer-name">Emma Wilson</div>
+                        <div class="reviewer-location">🌍 Reino Unido</div>
+                    </div>
+                    <div class="review-date">24 de abril de 2026</div>
+                </div>
+                <div class="review-stars">⭐⭐⭐⭐ 4.0</div>
+                <div class="review-text">¡La BBQ Costilla Burger fue fantástica! La carne estaba tan tierna que se deshacía. ¡Definitivamente volveré!</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom navigation -->
+    <div class="bottom-nav">
+        <button class="nav-item" data-page="inicio">🏠</button>
+        <button class="nav-item" data-page="search">🔍</button>
+        <button class="nav-item" data-page="profile">👤</button>
+        <button class="nav-item" data-page="favorites">❤️</button>
+    </div>
+
+    <script src="../js/data.js"></script>
+    <script>
+        // ----- TEMA OSCURO/CLARO -----
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('foodtales_theme');
+            if (savedTheme === 'light') {
+                body.classList.remove('dark');
+                body.classList.add('light');
+                themeToggle.textContent = '☀️';
+            } else {
+                body.classList.remove('light');
+                body.classList.add('dark');
+                themeToggle.textContent = '🌙';
+            }
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            if (body.classList.contains('dark')) {
+                body.classList.remove('dark');
+                body.classList.add('light');
+                localStorage.setItem('foodtales_theme', 'light');
+                themeToggle.textContent = '☀️';
+            } else {
+                body.classList.remove('light');
+                body.classList.add('dark');
+                localStorage.setItem('foodtales_theme', 'dark');
+                themeToggle.textContent = '🌙';
+            }
+        });
+        
+        loadTheme();
+        
+        // ----- MOSTRAR NOMBRE DEL USUARIO -----
+        function loadUserName() {
+            const currentUser = JSON.parse(localStorage.getItem('foodtales_current_user'));
+            if (currentUser && currentUser.name) {
+                document.getElementById('userNameDisplay').textContent = `👋 ${currentUser.name.split(' ')[0]}`;
+            } else {
+                document.getElementById('userNameDisplay').textContent = `👋 FoodLover`;
+            }
+        }
+        loadUserName();
+        
+        // ----- EXPANDIR HISTORY -----
+        const historyHeader = document.getElementById('historyHeader');
+        const historyContent = document.getElementById('historyContent');
+        const historyArrow = document.getElementById('historyArrow');
+        
+        historyHeader.addEventListener('click', () => {
+            historyContent.classList.toggle('open');
+            historyArrow.classList.toggle('open');
+        });
+        
+        // ----- EXPANDIR CADA BURGER -----
+        for (let i = 1; i <= 6; i++) {
+            const header = document.querySelector(`[data-burger="${i}"]`);
+            const details = document.getElementById(`burgerDetails${i}`);
+            const arrow = document.getElementById(`burgerArrow${i}`);
+            
+            if (header) {
+                header.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    details.classList.toggle('open');
+                    arrow.classList.toggle('open');
+                });
+            }
+        }
+        
+        // ----- FUNCIÓN VER EN MAPA -----
+        function verEnMapa(restaurante) {
+            alert(`🗺️ Próximamente: Ver ${restaurante} en el mapa interactivo`);
+        }
+        
+        // ----- BOTÓN ATRÁS -----
+        document.getElementById('backBtn').addEventListener('click', () => {
+            window.location.href = 'pag_inicial.html';
+        });
+        
+        // ----- NAVEGACIÓN -----
+        document.querySelectorAll('.nav-item').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const page = btn.getAttribute('data-page');
+                if (page === 'profile') window.location.href = 'perfil.html';
+                else if (page === 'inicio') window.location.href = 'pag_inicial.html';
+                else if (page === 'favorites') window.location.href = 'favorites.html';
+                else if (page === 'search') alert('Próximamente: Búsqueda avanzada');
+            });
+        });
+    </script>
+</body>
+</html>
