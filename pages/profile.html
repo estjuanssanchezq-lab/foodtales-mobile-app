@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>FoodTales - Edit Profile</title>
+    <title data-i18n="profileTitle">FoodTales - Edit Profile</title>
     <link rel="stylesheet" href="../css/profile.css">
 </head>
 <body class="dark">
@@ -13,7 +13,11 @@
                 <h1>🍜 FoodTales</h1>
                 <p class="logo-sub">edita tu aventura culinaria</p>
             </div>
-            <button class="theme-toggle" id="themeToggle">🌙</button>
+            <div class="header-controls">
+                <span class="theme-label" data-i18n="theme">Tema</span>
+                <span id="themeModeLabel" class="theme-mode-label"></span>
+                <button class="theme-toggle" id="themeToggle">🌙</button>
+            </div>
         </div>
 
         <!-- Foto de perfil -->
@@ -112,406 +116,314 @@
             </div>
 
             <button type="button" class="btn-save" id="saveProfileBtn" data-i18n="saveProfile">💾 Guardar perfil</button>
+            <button type="button" class="btn-logout" id="logoutBtn" data-i18n="logout">🚪 Cerrar Sesión</button>
         </form>
         <div id="saveMessage" class="message"></div>
     </div>
 
     <!-- Barra de navegación inferior -->
+    <!-- Bottom navigation -->
     <div class="bottom-nav">
-        <button class="nav-item" data-page="home" data-i18n="homeIcon">🏠</button>
-        <button class="nav-item" data-page="map" data-i18n="mapIcon">📍</button>
-        <button class="nav-item" data-page="favorites" data-i18n="favoritesIcon">❤️</button>
-        <button class="nav-item active" data-page="profile" data-i18n="profileIcon">👤</button>
+        <button class="nav-item" data-page="home">🏠</button>
+        <button class="nav-item" data-page="map">📍</button>
+        <button class="nav-item" data-page="favorites">❤️</button>
+        <button class="nav-item active" data-page="profile">👤</button>
     </div>
 
+    <script src="../js/i18n.js"></script>
     <script>
-        // ----- DICCIONARIO DE TRADUCCIONES -----
-        const translations = {
-            español: {
-                // Labels y textos
-                uploadPhoto: "📷 Subir foto",
-                defaultPhoto: "🔄 Predeterminada",
-                personalInfo: "👤 Información personal",
-                fullName: "Nombre completo *",
-                birthDate: "Fecha de nacimiento",
-                age: "Edad",
-                nationality: "Nacionalidad",
-                languagePref: "Idioma preferido",
-                currency: "Moneda",
-                healthData: "🧬 Datos físicos y salud",
-                height: "Altura (cm)",
-                weight: "Peso (kg)",
-                gender: "Género",
-                selectOption: "Selecciona",
-                female: "Femenino",
-                male: "Masculino",
-                nonBinary: "No binario",
-                preferNot: "Prefiero no decir",
-                medicalConditions: "Condiciones médicas",
-                diabetes: "Diabetes",
-                hypertension: "Hipertensión",
-                celiac: "Celiaquía",
-                cholesterol: "Colesterol alto",
-                other: "Otras",
-                allergies: "🥜 Alergias alimentarias",
-                addAllergy: "+ Añadir",
-                location: "📍 Ubicación",
-                cityCountry: "Ciudad / País",
-                saveProfile: "💾 Guardar perfil",
-                saveSuccess: "✅ Perfil guardado correctamente",
-                logoSub: "edita tu aventura culinaria",
-                // placeholders
-                namePlaceholder: "María García",
-                nationalityPlaceholder: "Ej: Colombiana",
-                allergyPlaceholder: "Ej: mariscos, gluten, lácteos...",
-                locationPlaceholder: "Bogotá, Colombia",
-                agePlaceholder: "-- años"
-            },
-            inglés: {
-                uploadPhoto: "📷 Upload photo",
-                defaultPhoto: "🔄 Default",
-                personalInfo: "👤 Personal information",
-                fullName: "Full name *",
-                birthDate: "Birth date",
-                age: "Age",
-                nationality: "Nationality",
-                languagePref: "Preferred language",
-                currency: "Currency",
-                healthData: "🧬 Health & physical data",
-                height: "Height (cm)",
-                weight: "Weight (kg)",
-                gender: "Gender",
-                selectOption: "Select",
-                female: "Female",
-                male: "Male",
-                nonBinary: "Non-binary",
-                preferNot: "Prefer not to say",
-                medicalConditions: "Medical conditions",
-                diabetes: "Diabetes",
-                hypertension: "Hypertension",
-                celiac: "Celiac disease",
-                cholesterol: "High cholesterol",
-                other: "Other",
-                allergies: "🥜 Food allergies",
-                addAllergy: "+ Add",
-                location: "📍 Location",
-                cityCountry: "City / Country",
-                saveProfile: "💾 Save profile",
-                saveSuccess: "✅ Profile saved successfully",
-                logoSub: "edit your culinary adventure",
-                namePlaceholder: "Maria Garcia",
-                nationalityPlaceholder: "e.g., Colombian",
-                allergyPlaceholder: "e.g., shellfish, gluten, dairy...",
-                locationPlaceholder: "Bogotá, Colombia",
-                agePlaceholder: "-- years"
+    // Adapter para i18n central
+    function applyProfilePageTranslations() {
+        if (window.i18n && typeof window.i18n.applyLanguage === 'function') {
+            window.i18n.applyLanguage();
+        }
+
+        const t = (key) => (window.i18n && typeof window.i18n.t === 'function') ? window.i18n.t(key) : '';
+
+        const nameInput = document.getElementById('fullName');
+        if (nameInput) nameInput.placeholder = t('namePlaceholder') || '';
+
+        const nationalityInput = document.getElementById('nationality');
+        if (nationalityInput) nationalityInput.placeholder = t('nationalityPlaceholder') || '';
+
+        const allergyInput = document.getElementById('newAlergia');
+        if (allergyInput) allergyInput.placeholder = t('allergyPlaceholder') || '';
+
+        const locationInput = document.getElementById('location');
+        if (locationInput) locationInput.placeholder = t('locationPlaceholder') || '';
+
+        const ageInput = document.getElementById('age');
+        if (ageInput) ageInput.placeholder = t('agePlaceholder') || '';
+
+        const logoSub = document.querySelector('.logo-sub');
+        if (logoSub) logoSub.textContent = t('logoSub') || logoSub.textContent;
+
+        const themeModeLabel = document.getElementById('themeModeLabel');
+        const currentTheme = document.body.classList.contains('light') ? 'light' : 'dark';
+        if (themeModeLabel) themeModeLabel.textContent = currentTheme === 'light' ? t('lightMode') : t('darkMode');
+
+        const toggle = document.getElementById('themeToggle');
+        if (toggle) toggle.textContent = currentTheme === 'light' ? '☀️' : '🌙';
+    }
+
+    // ----- TEMA OSCURO/CLARO -----
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
+
+    function loadTheme() {
+        const savedTheme = localStorage.getItem('foodtales_theme');
+
+        if (savedTheme === 'light') {
+            body.classList.remove('dark');
+            body.classList.add('light');
+            themeToggle.textContent = '☀️';
+        } else {
+            body.classList.remove('light');
+            body.classList.add('dark');
+            themeToggle.textContent = '🌙';
+        }
+
+        applyProfilePageTranslations();
+    }
+
+    themeToggle.addEventListener('click', () => {
+        if (body.classList.contains('dark')) {
+            body.classList.remove('dark');
+            body.classList.add('light');
+            localStorage.setItem('foodtales_theme', 'light');
+            themeToggle.textContent = '☀️';
+        } else {
+            body.classList.remove('light');
+            body.classList.add('dark');
+            localStorage.setItem('foodtales_theme', 'dark');
+            themeToggle.textContent = '🌙';
+        }
+
+        applyProfilePageTranslations();
+    });
+
+    loadTheme();
+
+    // ----- FOTO DE PERFIL -----
+    const profileImg = document.getElementById('profilePhoto');
+    const photoInput = document.getElementById('photoInput');
+    const uploadBtn = document.getElementById('uploadPhotoBtn');
+    const defaultBtn = document.getElementById('defaultPhotoBtn');
+
+    uploadBtn.addEventListener('click', () => photoInput.click());
+
+    photoInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => profileImg.src = event.target.result;
+            reader.readAsDataURL(file);
+        }
+    });
+
+    defaultBtn.addEventListener('click', () => {
+        profileImg.src = 'https://i.pravatar.cc/300';
+    });
+
+    // ----- ALERGIAS -----
+    let alergiasArray = [];
+
+    function renderAlergias() {
+        const container = document.getElementById('alergiasList');
+        container.innerHTML = '';
+
+        alergiasArray.forEach((alergia, index) => {
+            const tag = document.createElement('span');
+            tag.className = 'alergia-tag';
+            tag.innerHTML = `${alergia} <button data-index="${index}">✖</button>`;
+            container.appendChild(tag);
+        });
+
+        document.querySelectorAll('.alergia-tag button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const idx = parseInt(btn.getAttribute('data-index'));
+                alergiasArray.splice(idx, 1);
+                renderAlergias();
+            });
+        });
+    }
+
+    document.getElementById('addAlergiaBtn').addEventListener('click', () => {
+        const input = document.getElementById('newAlergia');
+        const value = input.value.trim();
+
+        if (value && !alergiasArray.includes(value)) {
+            alergiasArray.push(value);
+            renderAlergias();
+            input.value = '';
+        }
+    });
+
+    // ----- CALCULAR EDAD -----
+    function calculateAge(birthDate) {
+        if (!birthDate) return '';
+
+        const today = new Date();
+        const birth = new Date(birthDate);
+        let age = today.getFullYear() - birth.getFullYear();
+        const m = today.getMonth() - birth.getMonth();
+
+        if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
+            age--;
+        }
+
+        return age;
+    }
+
+    document.getElementById('birthDate').addEventListener('change', function () {
+        const age = calculateAge(this.value);
+        const langCode = localStorage.getItem('foodtales-language') || 'es';
+        document.getElementById('age').value = age ? age + (langCode === 'es' ? ' años' : ' years') : '';
+    });
+
+    // ----- CARGAR PERFIL -----
+    function loadProfile() {
+        const currentUser = JSON.parse(localStorage.getItem('foodtales_current_user'));
+        if (!currentUser) return;
+
+        const email = currentUser.email;
+        const users = JSON.parse(localStorage.getItem('foodtales_users')) || [];
+        const user = users.find(u => u.email === email);
+
+        if (user && user.profileData) {
+            const data = user.profileData;
+
+            document.getElementById('fullName').value = data.fullName || '';
+            document.getElementById('birthDate').value = data.birthDate || '';
+            document.getElementById('age').value = data.age || '';
+            document.getElementById('nationality').value = data.nationality || '';
+            document.getElementById('languagePref').value = data.languagePref || 'español';
+            document.getElementById('currency').value = data.currency || 'COP';
+            document.getElementById('height').value = data.height || '';
+            document.getElementById('weight').value = data.weight || '';
+            document.getElementById('gender').value = data.gender || '';
+            document.getElementById('location').value = data.location || '';
+
+            if (data.conditions) {
+                document.querySelectorAll('#conditionsGroup input').forEach(cb => {
+                    cb.checked = data.conditions.includes(cb.value);
+                });
             }
+
+            if (data.alergias) {
+                alergiasArray = [...data.alergias];
+                renderAlergias();
+            }
+
+            if (data.photo) profileImg.src = data.photo;
+        } else if (user && user.name) {
+            document.getElementById('fullName').value = user.name;
+        }
+
+        applyProfilePageTranslations();
+    }
+
+    // ----- GUARDAR PERFIL -----
+    function saveProfile() {
+        const currentUser = JSON.parse(localStorage.getItem('foodtales_current_user'));
+
+        if (!currentUser) {
+            alert('No hay sesión activa');
+            return;
+        }
+
+        const email = currentUser.email;
+        const users = JSON.parse(localStorage.getItem('foodtales_users')) || [];
+        const userIndex = users.findIndex(u => u.email === email);
+
+        if (userIndex === -1) return;
+
+        const birthDate = document.getElementById('birthDate').value;
+        const selectedLanguage = document.getElementById('languagePref').value;
+        const mappedLanguage = selectedLanguage === 'inglés' ? 'en' : 'es';
+
+        const ageNum = calculateAge(birthDate);
+        const ageText = ageNum ? ageNum + (mappedLanguage === 'en' ? ' years' : ' años') : '';
+
+        const conditionsSelected = [];
+        document.querySelectorAll('#conditionsGroup input:checked').forEach(cb => {
+            conditionsSelected.push(cb.value);
+        });
+
+        const profileData = {
+            fullName: document.getElementById('fullName').value,
+            birthDate: birthDate,
+            age: ageText,
+            nationality: document.getElementById('nationality').value,
+            languagePref: selectedLanguage,
+            currency: document.getElementById('currency').value,
+            height: document.getElementById('height').value,
+            weight: document.getElementById('weight').value,
+            gender: document.getElementById('gender').value,
+            conditions: conditionsSelected,
+            alergias: alergiasArray,
+            location: document.getElementById('location').value,
+            photo: profileImg.src
         };
 
-        let currentLanguage = "español"; // por defecto
+        users[userIndex].profileData = profileData;
+        users[userIndex].profileCompleted = true;
+        users[userIndex].language = selectedLanguage;
 
-        function applyLanguage(lang) {
-            currentLanguage = lang;
-            const t = translations[lang];
-            if (!t) return;
-            
-            // Actualizar textos de elementos con data-i18n
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if (t[key]) {
-                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-                        if (el.placeholder !== undefined) el.placeholder = t[key];
-                    } else if (el.tagName === 'BUTTON' && el.id !== 'addAlergiaBtn') {
-                        // Para botones que no son el de añadir (que tiene icono)
-                        if (key !== 'addAllergy') el.innerHTML = t[key];
-                        else el.innerHTML = t[key];
-                    } else if (el.tagName === 'LABEL') {
-                        el.innerHTML = t[key];
-                    } else if (el.tagName === 'H3') {
-                        el.innerHTML = t[key];
-                    } else if (el.classList.contains('nav-item')) {
-                        // Para íconos de navegación, solo cambiamos tooltip opcional, dejamos emoji
-                        // no cambiamos el emoji
-                    } else {
-                        el.innerHTML = t[key];
-                    }
-                }
-            });
-            
-            // Actualizar placeholders específicos que no tienen data-i18n
-            const nameInput = document.getElementById('fullName');
-            if (nameInput) nameInput.placeholder = t.namePlaceholder || (lang === 'español' ? 'María García' : 'Maria Garcia');
-            
-            const nationalityInput = document.getElementById('nationality');
-            if (nationalityInput) nationalityInput.placeholder = t.nationalityPlaceholder || (lang === 'español' ? 'Ej: Colombiana' : 'e.g., Colombian');
-            
-            const allergyInput = document.getElementById('newAlergia');
-            if (allergyInput) allergyInput.placeholder = t.allergyPlaceholder || (lang === 'español' ? 'Ej: mariscos, gluten, lácteos...' : 'e.g., shellfish, gluten, dairy...');
-            
-            const locationInput = document.getElementById('location');
-            if (locationInput) locationInput.placeholder = t.locationPlaceholder || (lang === 'español' ? 'Bogotá, Colombia' : 'Bogotá, Colombia');
-            
-            const ageInput = document.getElementById('age');
-            if (ageInput) ageInput.placeholder = t.agePlaceholder || (lang === 'español' ? '-- años' : '-- years');
-            
-            const logoSub = document.querySelector('.logo-sub');
-            if (logoSub) logoSub.textContent = t.logoSub;
-            
-            // Traducir opciones del select de género
-            const genderSelect = document.getElementById('gender');
-            if (genderSelect) {
-                const options = genderSelect.options;
-                if (options[0]) options[0].text = t.selectOption;
-                if (options[1]) options[1].text = t.female;
-                if (options[2]) options[2].text = t.male;
-                if (options[3]) options[3].text = t.nonBinary;
-                if (options[4]) options[4].text = t.preferNot;
-            }
-            
-            // Traducir checkboxes de condiciones
-            const conditionLabels = {
-                diabetes: t.diabetes,
-                hipertension: t.hypertension,
-                celiaquia: t.celiac,
-                colesterol: t.cholesterol,
-                otras: t.other
-            };
-            document.querySelectorAll('#conditionsGroup label').forEach(label => {
-                const checkbox = label.querySelector('input');
-                const span = label.querySelector('span');
-                if (checkbox && span && conditionLabels[checkbox.value]) {
-                    span.textContent = conditionLabels[checkbox.value];
-                }
-            });
-            
-            // Traducir mensaje del botón de alergias
-            const addBtn = document.getElementById('addAlergiaBtn');
-            if (addBtn) addBtn.innerHTML = t.addAllergy;
-            
-            // Traducir botón de guardar
-            const saveBtn = document.getElementById('saveProfileBtn');
-            if (saveBtn) saveBtn.innerHTML = t.saveProfile;
+        localStorage.setItem('foodtales_users', JSON.stringify(users));
+        localStorage.setItem('foodtales-language', mappedLanguage);
+
+        if (window.i18n && typeof window.i18n.setLanguage === 'function') {
+            window.i18n.setLanguage(mappedLanguage);
         }
 
-        // ----- TEMA OSCURO/CLARO -----
-        const themeToggle = document.getElementById('themeToggle');
-        const body = document.body;
-        function loadTheme() {
-            const savedTheme = localStorage.getItem('foodtales_theme');
-            if (savedTheme === 'light') {
-                body.classList.remove('dark');
-                body.classList.add('light');
-                themeToggle.textContent = '☀️';
-            } else {
-                body.classList.remove('light');
-                body.classList.add('dark');
-                themeToggle.textContent = '🌙';
-            }
-        }
-        themeToggle.addEventListener('click', () => {
-            if (body.classList.contains('dark')) {
-                body.classList.remove('dark');
-                body.classList.add('light');
-                localStorage.setItem('foodtales_theme', 'light');
-                themeToggle.textContent = '☀️';
-            } else {
-                body.classList.remove('light');
-                body.classList.add('dark');
-                localStorage.setItem('foodtales_theme', 'dark');
-                themeToggle.textContent = '🌙';
-            }
-        });
-        loadTheme();
+        applyProfilePageTranslations();
 
-        // ----- FOTO DE PERFIL -----
-        const profileImg = document.getElementById('profilePhoto');
-        const photoInput = document.getElementById('photoInput');
-        const uploadBtn = document.getElementById('uploadPhotoBtn');
-        const defaultBtn = document.getElementById('defaultPhotoBtn');
+        const msgDiv = document.getElementById('saveMessage');
+        const successMsg = window.i18n && typeof window.i18n.t === 'function'
+            ? window.i18n.t('saveSuccess')
+            : 'Perfil guardado correctamente';
 
-        uploadBtn.addEventListener('click', () => photoInput.click());
-        photoInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (event) => profileImg.src = event.target.result;
-                reader.readAsDataURL(file);
+        msgDiv.innerHTML = '✅ ' + successMsg;
+        msgDiv.className = 'message success';
+
+        setTimeout(() => {
+            msgDiv.innerHTML = '';
+        }, 2500);
+    }
+
+    document.getElementById('saveProfileBtn').addEventListener('click', saveProfile);
+
+    // Cambiar idioma en el formulario: NO aplica hasta guardar
+    document.getElementById('languagePref').addEventListener('change', () => {
+        // Intencionalmente vacío.
+        // El idioma solo se aplica al presionar Guardar perfil.
+    });
+
+    // ----- NAVEGACIÓN UNIFICADA -----
+    document.querySelectorAll('.nav-item').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const page = btn.getAttribute('data-page');
+
+            if (page === 'home') {
+                window.location.href = 'home.html';
+            } else if (page === 'map') {
+                window.location.href = 'map.html';
+            } else if (page === 'favorites') {
+                window.location.href = 'favorites.html';
+            } else if (page === 'profile') {
+                window.location.href = 'profile.html';
             }
         });
-        defaultBtn.addEventListener('click', () => profileImg.src = 'https://i.pravatar.cc/300');
+    });
 
-        // ----- ALERGIAS -----
-        let alergiasArray = [];
+    // ----- CERRAR SESIÓN -----
+    document.getElementById('logoutBtn')?.addEventListener('click', () => {
+        window.location.href = '../index.html';
+    });
 
-        function renderAlergias() {
-            const container = document.getElementById('alergiasList');
-            container.innerHTML = '';
-            alergiasArray.forEach((alergia, index) => {
-                const tag = document.createElement('span');
-                tag.className = 'alergia-tag';
-                tag.innerHTML = `${alergia} <button data-index="${index}">✖</button>`;
-                container.appendChild(tag);
-            });
-            document.querySelectorAll('.alergia-tag button').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const idx = parseInt(btn.getAttribute('data-index'));
-                    alergiasArray.splice(idx, 1);
-                    renderAlergias();
-                });
-            });
-        }
-
-        document.getElementById('addAlergiaBtn').addEventListener('click', () => {
-            const input = document.getElementById('newAlergia');
-            const value = input.value.trim();
-            if (value && !alergiasArray.includes(value)) {
-                alergiasArray.push(value);
-                renderAlergias();
-                input.value = '';
-            }
-        });
-
-        // ----- CALCULAR EDAD -----
-        function calculateAge(birthDate) {
-            if (!birthDate) return '';
-            const today = new Date();
-            const birth = new Date(birthDate);
-            let age = today.getFullYear() - birth.getFullYear();
-            const m = today.getMonth() - birth.getMonth();
-            if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
-            return age;
-        }
-
-        document.getElementById('birthDate').addEventListener('change', function() {
-            const age = calculateAge(this.value);
-            document.getElementById('age').value = age ? age + (currentLanguage === 'español' ? ' años' : ' years') : '';
-        });
-
-        // ----- CARGAR PERFIL -----
-        function loadProfile() {
-            const currentUser = JSON.parse(localStorage.getItem('foodtales_current_user'));
-            if (!currentUser) return;
-            const email = currentUser.email;
-            const users = JSON.parse(localStorage.getItem('foodtales_users')) || [];
-            const user = users.find(u => u.email === email);
-            if (user && user.profileData) {
-                const data = user.profileData;
-                document.getElementById('fullName').value = data.fullName || '';
-                document.getElementById('birthDate').value = data.birthDate || '';
-                const ageVal = data.age || '';
-                document.getElementById('age').value = ageVal;
-                document.getElementById('nationality').value = data.nationality || '';
-                const langPref = data.languagePref || 'español';
-                document.getElementById('languagePref').value = langPref;
-                document.getElementById('currency').value = data.currency || 'COP';
-                document.getElementById('height').value = data.height || '';
-                document.getElementById('weight').value = data.weight || '';
-                document.getElementById('gender').value = data.gender || '';
-                document.getElementById('location').value = data.location || '';
-                if (data.conditions) {
-                    document.querySelectorAll('#conditionsGroup input').forEach(cb => {
-                        if (data.conditions.includes(cb.value)) cb.checked = true;
-                    });
-                }
-                if (data.alergias) {
-                    alergiasArray = [...data.alergias];
-                    renderAlergias();
-                }
-                if (data.photo) profileImg.src = data.photo;
-                
-                // Aplicar idioma guardado
-                if (langPref === 'inglés') {
-                    applyLanguage('inglés');
-                } else {
-                    applyLanguage('español');
-                }
-            } else {
-                if (user && user.name) document.getElementById('fullName').value = user.name;
-                applyLanguage('español'); // default
-            }
-        }
-
-        // ----- GUARDAR PERFIL -----
-        function saveProfile() {
-            const currentUser = JSON.parse(localStorage.getItem('foodtales_current_user'));
-            if (!currentUser) {
-                alert('No hay sesión activa');
-                return;
-            }
-            const email = currentUser.email;
-            const users = JSON.parse(localStorage.getItem('foodtales_users')) || [];
-            const userIndex = users.findIndex(u => u.email === email);
-            if (userIndex === -1) return;
-
-            const birthDate = document.getElementById('birthDate').value;
-            const ageNum = calculateAge(birthDate);
-            const ageText = ageNum ? ageNum + (currentLanguage === 'español' ? ' años' : ' years') : '';
-            
-            const conditionsSelected = [];
-            document.querySelectorAll('#conditionsGroup input:checked').forEach(cb => conditionsSelected.push(cb.value));
-
-            const selectedLanguage = document.getElementById('languagePref').value;
-            
-            const profileData = {
-                fullName: document.getElementById('fullName').value,
-                birthDate: birthDate,
-                age: ageText,
-                nationality: document.getElementById('nationality').value,
-                languagePref: selectedLanguage,
-                currency: document.getElementById('currency').value,
-                height: document.getElementById('height').value,
-                weight: document.getElementById('weight').value,
-                gender: document.getElementById('gender').value,
-                conditions: conditionsSelected,
-                alergias: alergiasArray,
-                location: document.getElementById('location').value,
-                photo: profileImg.src
-            };
-
-            users[userIndex].profileData = profileData;
-            users[userIndex].profileCompleted = true;
-            if (users[userIndex].language !== selectedLanguage) {
-                users[userIndex].language = selectedLanguage;
-            }
-            localStorage.setItem('foodtales_users', JSON.stringify(users));
-            
-            // Aplicar idioma después de guardar
-            if (selectedLanguage === 'inglés') {
-                applyLanguage('inglés');
-            } else {
-                applyLanguage('español');
-            }
-            
-            const msgDiv = document.getElementById('saveMessage');
-            const successMsg = currentLanguage === 'español' ? '✅ Perfil guardado correctamente' : '✅ Profile saved successfully';
-            msgDiv.innerHTML = successMsg;
-            msgDiv.className = 'message success';
-            setTimeout(() => msgDiv.innerHTML = '', 2500);
-        }
-
-        document.getElementById('saveProfileBtn').addEventListener('click', saveProfile);
-        
-        // Cambiar idioma cuando se selecciona en el select
-        document.getElementById('languagePref').addEventListener('change', (e) => {
-            const newLang = e.target.value;
-            if (newLang === 'inglés') {
-                applyLanguage('inglés');
-            } else {
-                applyLanguage('español');
-            }
-        });
-        
-        // ----- NAVEGACIÓN UNIFICADA -----
-        document.querySelectorAll('.nav-item').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const page = btn.getAttribute('data-page');
-                if (page === 'home') window.location.href = 'home.html';
-                else if (page === 'map') window.location.href = 'map.html';
-                else if (page === 'profile') window.location.href = 'profile.html';
-                else if (page === 'favorites') window.location.href = 'favorites.html';
-            });
-        });
-
-        loadProfile();
-    </script>
+    loadProfile();
+</script>
 </body>
 </html>

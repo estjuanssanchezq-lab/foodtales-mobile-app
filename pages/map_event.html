@@ -13,10 +13,11 @@
 <body class="dark">
   <div id="event-map"></div>
 
-  <!-- Event topbar: banner (left) + theme toggle (right) -->
+  <!-- Event header: back button (left), centered title, theme toggle (right) -->
   <div class="event-topbar">
-    <div class="event-banner">🔥 Burger Master 2026</div>
-    <button id="themeToggle" class="theme-toggle" aria-label="Alternar tema">🌙</button>
+    <button id="backBtn" class="header-btn back-btn" aria-label="Volver">←</button>
+    <div class="header-title"><span class="title-badge">🔥</span> <span class="title-text">Burger Master 2026</span></div>
+    <button id="themeToggle" class="theme-toggle header-btn" aria-label="Alternar tema">🌙</button>
   </div>
 
   <!-- Bottom sheet (event specific) -->
@@ -31,6 +32,9 @@
     </div>
   </div>
 
+  <!-- Floating locate button (outside bottom sheet so it floats over the map) -->
+  <button id="locateBtn" class="locate-btn" aria-label="Centrar ubicación">📍</button>
+
   <!-- Bottom navigation -->
   <div class="bottom-nav">
     <button class="nav-item" data-page="home">🏠</button>
@@ -40,6 +44,7 @@
   </div>
 
   <script src="../js/data.js"></script>
+  <script src="../js/i18n.js"></script>
   <script src="https://unpkg.com/maplibre-gl/dist/maplibre-gl.js"></script>
   <script src="../js/map_event.js"></script>
   <script>
@@ -52,6 +57,9 @@
       else if (page === 'favorites') window.location.href = 'favorites.html';
       else if (page === 'profile') window.location.href = 'profile.html';
     }));
+
+    // back button for event map header
+    document.getElementById('backBtn')?.addEventListener('click', ()=>{ window.location.href = 'event.html'; });
   </script>
 </body>
 </html>

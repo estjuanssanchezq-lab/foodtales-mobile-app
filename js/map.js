@@ -1,16 +1,17 @@
 (async function(){
   const platosData = await (window.loadPlatos ? window.loadPlatos() : Promise.resolve(getPlatos()));
 
-  const categories = ['All','Breakfast','Lunch','Desserts','Juices','Fast Food','Traditional'];
-  const categoryMap = {
-    'All': platosData.map(p=>p.id),
-    'Breakfast': ['arepa'],
-    'Lunch': ['bandeja','ajiaco','sancocho'],
-    'Desserts': [],
-    'Juices': [],
-    'Fast Food': ['hamburguesa'],
-    'Traditional': ['ajiaco','bandeja','sancocho']
-  };
+  // Category definitions (id, i18n key, icon, allowed dish ids)
+  const categoryDefs = [
+    { id: 'all', key: 'all', icon: '🍽️', allowed: platosData.map(p=>p.id) },
+    { id: 'breakfast', key: 'breakfast', icon: '🍳', allowed: ['arepa'] },
+    { id: 'lunch', key: 'lunch', icon: '🍲', allowed: ['bandeja','ajiaco','sancocho'] },
+    { id: 'dinner', key: 'dinner', icon: '🍽️', allowed: ['bandeja','ajiaco','sancocho'] },
+    { id: 'desserts', key: 'desserts', icon: '🍰', allowed: [] },
+    { id: 'juices', key: 'juices', icon: '🧃', allowed: [] },
+    { id: 'fastFood', key: 'fastFood', icon: '🍔', allowed: ['hamburguesa'] },
+    { id: 'traditional', key: 'traditional', icon: '🇨🇴', allowed: ['ajiaco','bandeja','sancocho'] }
+  ];
 
   const chipsWrapper = document.getElementById('chipsWrapper');
   const themeToggle = document.getElementById('themeToggle');
@@ -29,36 +30,73 @@
   const routesList = document.getElementById('routesList');
   const sheetTabs = document.querySelectorAll('.sheet-tab');
 
-  let selectedCategory = 'All';
+  let selectedCategory = 'all';
   let currentMarkers = [];
+  let markerById = {};
   let currentRoute = null;
   let currentTheme = 'dark';
 
-  // create chips with emojis
-  const categoryIcons = {
-    'All': '🍽️',
-    'Breakfast': '🍳',
-    'Lunch': '🍲',
-    'Desserts': '🍰',
-    'Juices': '🧃',
-    'Fast Food': '🍔',
-    'Traditional': '🇨🇴'
-  };
-
-  categories.forEach(cat => {
+  // create chips with emojis and i18n labels
+  categoryDefs.forEach(def => {
     const btn = document.createElement('button');
     btn.className = 'chip';
-    btn.dataset.category = cat;
-    btn.innerHTML = ` <span class="chip-emoji">${categoryIcons[cat]||''}</span><span class="chip-label">${cat}</span>`;
-    if (cat === 'All') btn.classList.add('active');
+    btn.dataset.category = def.id;
+    const label = (window.i18n && window.i18n.t) ? window.i18n.t(def.key) : def.key;
+    btn.innerHTML = ` <span class="chip-emoji">${def.icon||''}</span><span class="chip-label">${label}</span>`;
+    if (def.id === 'all') btn.classList.add('active');
     btn.addEventListener('click', ()=>{
+      // clear any active route when changing category
+      removeCurrentRouteLayer();
       document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
       btn.classList.add('active');
-      selectedCategory = cat;
+      selectedCategory = def.id;
       applyFiltersAndUpdate();
     });
     chipsWrapper.appendChild(btn);
   });
+
+  // Update chip labels when language changes
+  window.onLanguageChange = function(lang){
+    document.querySelectorAll('.chip').forEach(btn=>{
+      const id = btn.dataset.category;
+      const def = categoryDefs.find(c=>c.id === id);
+      if (def) {
+        const label = (window.i18n && window.i18n.t) ? window.i18n.t(def.key) : def.key;
+        const lblEl = btn.querySelector('.chip-label'); if (lblEl) lblEl.textContent = label;
+      }
+    });
+    // also update sheet tab labels (data-i18n handled by i18n.applyLanguage)
+  };
+
+  // If a `filter` query param is present, activate corresponding chip on load
+  (function(){
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const f = (params.get('filter') || '').toLowerCase();
+      if (!f) return;
+      const mapParam = {
+        'breakfast':'breakfast', 'desayuno':'breakfast',
+        'lunch':'lunch', 'almuerzo':'lunch', 'dinner':'dinner',
+        'desserts':'desserts', 'postre':'desserts', 'dessert':'desserts',
+        'juices':'juices', 'juice':'juices',
+        'fastfood':'fastFood', 'fast-food':'fastFood', 'fast food':'fastFood',
+        'traditional':'traditional'
+      };
+      const target = mapParam[f];
+      if (!target) return;
+      const chip = document.querySelector(`.chip[data-category="${target}"]`);
+      if (chip) {
+        document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+        chip.classList.add('active');
+        selectedCategory = target;
+        // ensure any active route is cleared
+        removeCurrentRouteLayer();
+        applyFiltersAndUpdate();
+        // scroll chip into view for UX
+        try { chip.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' }); } catch(e){}
+      }
+    } catch(e){}
+  })();
 
   // allow horizontal scrolling of chips via mouse wheel/trackpad
   if (chipsWrapper) {
@@ -93,6 +131,63 @@
   }
   applyMapTheme();
 
+  // --- User location (Geolocation API) ---
+  let userLocationMarker = null;
+  const userLocationSourceId = 'user-location-source';
+  const userAccuracyLayerId = 'user-accuracy-layer';
+
+  function metersPerPixel(lat, zoom) {
+    return 156543.03392 * Math.cos(lat * Math.PI / 180) / Math.pow(2, zoom);
+  }
+
+  function addUserLocationToMap() {
+    if (!('geolocation' in navigator)) { console.warn('Geolocation not available'); return; }
+    navigator.geolocation.getCurrentPosition((pos) => {
+      const lat = pos.coords.latitude;
+      const lng = pos.coords.longitude;
+      const accuracy = pos.coords.accuracy || 0;
+
+      // Marker element
+      if (!userLocationMarker) {
+        const el = document.createElement('div');
+        el.className = 'user-location-marker';
+        userLocationMarker = new maplibregl.Marker({ element: el, anchor: 'center' }).setLngLat([lng, lat]).addTo(map);
+      } else {
+        userLocationMarker.setLngLat([lng, lat]);
+      }
+
+      // Accuracy source + circle layer
+      const point = { type: 'Feature', geometry: { type: 'Point', coordinates: [lng, lat] }, properties: { accuracy } };
+      if (map.getSource(userLocationSourceId)) {
+        try { map.getSource(userLocationSourceId).setData(point); } catch(e) { /* ignore */ }
+      } else {
+        try {
+          map.addSource(userLocationSourceId, { type: 'geojson', data: point });
+          map.addLayer({ id: userAccuracyLayerId, type: 'circle', source: userLocationSourceId, paint: {
+            'circle-color': 'rgba(66,133,244,0.12)',
+            'circle-stroke-color': '#ffffff',
+            'circle-stroke-width': 2,
+            'circle-radius': Math.max(8, accuracy / metersPerPixel(lat, map.getZoom()))
+          }});
+        } catch(e) { console.warn('Failed to add user location layer', e); }
+      }
+
+      function updateAccuracy() {
+        try {
+          const pixels = Math.max(8, (accuracy || 0) / metersPerPixel(lat, map.getZoom()));
+          if (map.getLayer(userAccuracyLayerId)) map.setPaintProperty(userAccuracyLayerId, 'circle-radius', pixels);
+        } catch(e) {}
+      }
+
+      map.on('zoom', updateAccuracy);
+      map.on('move', updateAccuracy);
+
+      try { map.flyTo({ center: [lng, lat], zoom: 14, speed: 1.2, curve: 1.4 }); } catch(e) {}
+    }, (err) => {
+      console.warn('Geolocation error', err && err.message ? err.message : err);
+    }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 });
+  }
+
   // collapse bottom sheet when clicking/tapping on the map (but not when clicking inside the sheet)
   try {
     const mapContainer = map.getContainer();
@@ -113,10 +208,13 @@
     applyMapTheme();
     // switch tile style to the matching OpenFreeMap style
     map.setStyle(currentTheme === 'light' ? STYLE_LIGHT : STYLE_DARK);
+    // Re-apply markers/route after style change but DO NOT trigger geolocation from theme toggle
     map.once('styledata', ()=>{ if (currentRoute) startRoute(currentRoute); else applyFiltersAndUpdate(); });
   });
 
   function clearMarkers(){ currentMarkers.forEach(m=>m.remove()); currentMarkers = []; }
+
+  function clearMarkerById(){ Object.keys(markerById).forEach(k=>{ try{ const m = markerById[k].marker; if (m) m.remove(); } catch(e){} }); markerById = {}; }
 
   function createPinElement(text){
     const el = document.createElement('div');
@@ -156,7 +254,7 @@
   }
 
   function addMarkersForPlatos(platosArray){
-    clearMarkers();
+    clearMarkers(); clearMarkerById();
     platosArray.forEach(p=>{
       if (!p.lat || !p.lng) return;
       const el = createPinElement();
@@ -167,6 +265,7 @@
       // Click on the pin: center the map and open popup
       el.addEventListener('click', (e)=>{ e.stopPropagation(); map.easeTo({ center:[p.lng,p.lat], zoom:14, offset:[0,-100] }); try { marker.togglePopup(); } catch(err) { popup.addTo(map); } });
       currentMarkers.push(marker);
+      try { markerById[p.id] = { marker, popup, plato: p }; } catch(e){}
     });
   }
 
@@ -185,8 +284,27 @@
           <div class="plato-details"><span>📏 ${p.distancia} km</span><span>💰 $${p.precio.toLocaleString()}</span></div>
         </div>
       `;
-      // make the entire card clickable (tap anywhere to move/center the map only)
-      card.addEventListener('click', ()=>{ map.easeTo({ center:[p.lng,p.lat], zoom:14, offset:[0,-120]}); sheet.classList.remove('expanded'); sheet.classList.add('collapsed'); });
+      // make the entire card clickable: center map, collapse sheet, then open popup (in that order)
+      card.addEventListener('click', ()=>{
+        try { map.easeTo({ center:[p.lng,p.lat], zoom:14, offset:[0,-120]}); } catch(e){}
+        // collapse
+        sheet.classList.remove('expanded'); sheet.classList.add('collapsed'); sheet.style.height = '';
+        // after collapse transition, open popup for this dish
+        const openPopup = ()=>{
+          const entry = markerById[p.id];
+          if (!entry) return false;
+          try {
+            if (entry.marker && typeof entry.marker.togglePopup === 'function') { entry.marker.togglePopup(); return true; }
+            if (entry.marker && typeof entry.marker.getPopup === 'function' && entry.marker.getPopup()) { entry.marker.getPopup().addTo(map); return true; }
+            if (entry.popup) { entry.popup.addTo(map); return true; }
+          } catch(e){}
+          return false;
+        };
+        let done = false;
+        const onEnd = (ev)=>{ if (ev && ev.target !== sheet) return; if (done) return; done = true; sheet.removeEventListener('transitionend', onEnd); if (!openPopup()) setTimeout(()=>{ openPopup(); }, 250); };
+        sheet.addEventListener('transitionend', onEnd);
+        setTimeout(()=>{ if (!done) onEnd(); }, 400);
+      });
       nearbyList.appendChild(card);
     });
   }
@@ -239,28 +357,31 @@
       el.addEventListener('click', (e)=>{ e.stopPropagation(); map.easeTo({center:[p.lng,p.lat], zoom:14, offset:[0,-100]}); try { marker.togglePopup(); } catch(err){ popup.addTo(map); } });
       currentMarkers.push(marker);
     });
-    if (coords.length > 1){
-      const srcId = `route-src-${route.id}`;
-      const lineId = `route-line-${route.id}`;
-      map.addSource(srcId, { type:'geojson', data: { type:'Feature', geometry:{ type:'LineString', coordinates: coords } } });
-      map.addLayer({ id: lineId, type: 'line', source: srcId, layout:{'line-join':'round','line-cap':'round'}, paint:{'line-color':'#ffb347','line-width':4,'line-opacity':0.95} });
-      const bounds = coords.reduce((b,c)=> b.extend(c), new maplibregl.LngLatBounds(coords[0],coords[0]));
-      map.fitBounds(bounds, { padding: 80 });
-    } else if (coords.length === 1) { map.easeTo({ center: coords[0], zoom: 14 }); }
+    if (coords.length > 0){
+      // Do not draw connecting lines; only show pins and adjust viewport
+      if (coords.length === 1) map.easeTo({ center: coords[0], zoom: 14 });
+      else {
+        const bounds = coords.reduce((b,c)=> b.extend(c), new maplibregl.LngLatBounds(coords[0],coords[0]));
+        map.fitBounds(bounds, { padding: 80 });
+      }
+    }
     currentRoute = route;
     sheet.classList.add('collapsed');
   }
 
   function applyFiltersAndUpdate(){
+    // clearing any active route state when filtering
+    removeCurrentRouteLayer();
     const flavor = parseInt(flavorRange.value || 5, 10);
     const tMax = parseInt(timeMax.value || 60, 10);
     const pMax = parseInt(priceMax.value || 50000, 10);
     const dMax = parseFloat(distanceMax.value || 10);
     const rating = parseFloat(minRating.value || 0);
     let filtered = platosData.filter(p=>{
-      if (selectedCategory !== 'All'){
-        const allowed = categoryMap[selectedCategory] || [];
-        if (!allowed.includes(p.id)) return false;
+      if (selectedCategory && selectedCategory !== 'all'){
+        const def = categoryDefs.find(c=>c.id === selectedCategory);
+        const allowed = def ? def.allowed : [];
+        if (Array.isArray(allowed) && allowed.length && !allowed.includes(p.id)) return false;
       }
       if (p.sabor > flavor) return false;
       if (p.tiempoPreparacion > tMax) return false;
@@ -369,7 +490,26 @@
     else { nearbyList.classList.add('hidden'); routesList.classList.remove('hidden'); }
   }));
 
-  map.on('load', ()=>{ applyFiltersAndUpdate(); renderRoutesList(); });
+  map.on('load', ()=>{ applyFiltersAndUpdate(); renderRoutesList(); addUserLocationToMap(); try { map.resize(); } catch(e){} });
+
+  // Locate button: center map on the user's current location (visible above collapsed sheet)
+  const locateBtn = document.getElementById('locateBtn');
+  function disableLocateButton(){ if (locateBtn){ locateBtn.classList.add('disabled'); locateBtn.setAttribute('disabled',''); } }
+  if (locateBtn) {
+    locateBtn.addEventListener('click', (ev)=>{
+      ev.stopPropagation();
+      if (!('geolocation' in navigator)) { console.warn('Geolocation not available'); disableLocateButton(); return; }
+      if (userLocationMarker) {
+        try {
+          const lnglat = userLocationMarker.getLngLat();
+          map.flyTo({ center: [lnglat.lng, lnglat.lat], zoom: 14, speed: 1.2, curve: 1.4 });
+        } catch(e){ addUserLocationToMap(); }
+        return;
+      }
+      // Try to request location and fly to it
+      navigator.geolocation.getCurrentPosition((pos)=>{ try { addUserLocationToMap(); } catch(e){} }, (err)=>{ console.warn('Geolocation error', err && err.message ? err.message : err); if (err && err.code === 1) disableLocateButton(); }, { enableHighAccuracy:true, timeout:10000, maximumAge:60000 });
+    });
+  }
 
   // bottom nav actions (consistent with other pages)
   document.querySelectorAll('.nav-item').forEach(btn=> btn.addEventListener('click', ()=>{

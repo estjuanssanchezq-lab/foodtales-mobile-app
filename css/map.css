@@ -121,6 +121,23 @@ html, body { height:100%; margin:0; font-family: -apple-system, BlinkMacSystemFo
 .map-marker .pin{ width:42px; height:42px; border-radius:50%; background:var(--accent); border:3px solid var(--pin-border); transform:translateY(-12px); display:flex; align-items:center; justify-content:center; font-weight:800; color:#111; }
 .map-marker.route-marker .route-pin{ width:38px; height:38px; border-radius:50%; background:var(--route-pin-bg, #fff); color:var(--accent); border:3px solid var(--accent); transform:translateY(-10px); }
 
+/* User location marker (blue, white border) */
+.user-location-marker{ width:16px; height:16px; border-radius:50%; background:#4285f4; border:3px solid #ffffff; box-shadow: 0 2px 6px rgba(66,133,244,0.25); transform: translate(-50%, -50%); }
+
+/* Floating locate button (placed relative to the bottom-sheet) */
+.locate-btn{
+  position:fixed; left:16px; bottom: calc(80px + 160px + 12px); z-index:190; width:52px; height:52px; display:inline-flex; align-items:center; justify-content:center;
+  border-radius:50%; background:var(--panel); color:var(--text); border:1px solid var(--panel-border); cursor:pointer; font-size:1.15rem;
+  box-shadow: none; transition: opacity .18s ease, transform .18s ease; padding:0; backdrop-filter: none;
+}
+.locate-btn:active{ transform: translateY(1px); }
+.locate-btn.disabled{ opacity:0.45; pointer-events:none; }
+
+/* Hide locate button when sheet is expanded (sibling selector - locate button placed after the sheet) */
+.bottom-sheet.expanded ~ .locate-btn{ display:none; }
+
+@media (max-width:420px){ .locate-btn{ left:12px; bottom: calc(76px + 160px + 10px); width:48px; height:48px; } }
+
 /* Popup (custom map popup) */
 /* Reset maplibre popup content padding so our node defines the visual */
 .maplibregl-popup-content { padding: 0 !important; background: transparent !important; }

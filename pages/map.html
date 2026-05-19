@@ -38,34 +38,34 @@
   <!-- Advanced filter panel (compact) -->
   <div id="advancedFilterPanel" class="filter-panel hidden">
     <div class="filter-row">
-      <label>🧂 Sabor</label>
+      <label data-i18n="flavor">🧂 Sabor</label>
       <div class="flavor-wrap">
         <input type="range" id="flavorRange" min="1" max="10" value="5">
         <div class="flavor-scale"><span>Salado</span><span>🌶️</span><span>Dulce</span></div>
       </div>
     </div>
     <div class="filter-row">
-      <label>⏱️ Tiempo máximo</label>
+      <label data-i18n="timeMax">⏱️ Tiempo máximo</label>
       <input type="number" id="timeMax" min="5" max="240" value="60">
     </div>
     <div class="filter-row">
-      <label>💰 Precio máximo (COP)</label>
+      <label data-i18n="priceMax">💰 Precio máximo (COP)</label>
       <input type="number" id="priceMax" min="1000" step="1000" value="50000">
     </div>
     <div class="filter-row">
-      <label>📏 Distancia máxima (km)</label>
+      <label data-i18n="distanceMax">📏 Distancia máxima (km)</label>
       <input type="number" id="distanceMax" min="0.1" step="0.1" value="10">
     </div>
     <div class="filter-row">
-      <label>⭐ Calificación mínima</label>
+      <label data-i18n="minRating">⭐ Calificación mínima</label>
       <select id="minRating">
-        <option value="0">Todas</option>
+        <option value="0" data-i18n="all">Todas</option>
         <option value="4">4+</option>
         <option value="4.5">4.5+</option>
       </select>
     </div>
     <div class="filter-actions">
-      <button id="applyFilters" class="btn-primary" aria-label="Aplicar filtros">🔍 Aplicar filtros</button>
+      <button id="applyFilters" class="btn-primary" aria-label="Aplicar filtros" data-i18n="applyFilters">🔍 Aplicar filtros</button>
     </div>
   </div>
 
@@ -73,14 +73,17 @@
   <div id="bottomSheet" class="bottom-sheet collapsed">
     <div id="sheetHandle" class="sheet-handle"></div>
     <div class="sheet-tabs">
-      <button class="sheet-tab active" data-tab="nearby">Nearby Dishes</button>
-      <button class="sheet-tab" data-tab="routes">Explore Routes</button>
+      <button class="sheet-tab active" data-tab="nearby" data-i18n="nearbyDishes">Nearby Dishes</button>
+      <button class="sheet-tab" data-tab="routes" data-i18n="exploreRoutes">Explore Routes</button>
     </div>
     <div class="sheet-body">
       <div id="nearbyList" class="nearby-list"></div>
       <div id="routesList" class="routes-list hidden"></div>
     </div>
   </div>
+
+  <!-- Floating locate button (outside bottom sheet so it floats over the map) -->
+  <button id="locateBtn" class="locate-btn" aria-label="Centrar ubicación">📍</button>
 
   <!-- Bottom navigation (keep existing style) -->
   <div class="bottom-nav">
@@ -91,6 +94,7 @@
   </div>
 
   <script src="../js/data.js"></script>
+  <script src="../js/i18n.js"></script>
   <script src="https://unpkg.com/maplibre-gl/dist/maplibre-gl.js"></script>
   <script src="../js/map.js"></script>
   <script>

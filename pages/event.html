@@ -14,7 +14,7 @@
                 <button class="back-btn" id="backBtn">←</button>
                 <div>
                     <h1>🍔 Burger Master 2026</h1>
-                    <p>El festival de hamburguesas más grande</p>
+                    <p data-i18n="bestBurgerFestival">El festival de hamburguesas más grande</p>
                 </div>
             </div>
             <div class="user-info">
@@ -33,7 +33,7 @@
         </div>
 
         <div style="text-align:center; margin:16px 0;">
-            <button class="map-btn" id="openEventMapBtn">📍 Ver mapa del evento</button>
+            <button class="event-btn" id="openEventMapBtn" data-i18n="viewEventMap">Ver Mapa del Evento</button>
         </div>
 
         <!-- About the Event -->
@@ -49,7 +49,7 @@
         <!-- History & Culture expandible -->
         <div class="expandable-section">
             <div class="expandable-header" id="historyHeader">
-                <span class="expandable-title">📜 History & Culture</span>
+                <span class="expandable-title" data-i18n="historyCulture">📜 History & Culture</span>
                 <span class="expandable-arrow" id="historyArrow">▶</span>
             </div>
             <div class="expandable-content" id="historyContent">
@@ -73,7 +73,7 @@
         <div class="section-subtitle">🍔 Hamburguesas del Evento (6)</div>
 
         <!-- Burger 1 - Paisa Power Burger -->
-        <div class="burger-card">
+        <div class="burger-card" data-id="paisa_power" data-price="32000" data-rating="4.9" data-lat="4.6500" data-lng="-74.0600">
             <div class="burger-header" data-burger="1">
                 <div class="burger-img-container">
                     <img class="burger-img" src="../assets/images/paisa_burger.jpg" alt="Paisa Power Burger" onerror="this.src='https://placehold.co/60x60?text=🍔'">
@@ -88,12 +88,12 @@
                 <div class="restaurant-name">Disponible en: La Hamburguesería</div>
                 <div class="location">📍 Carrera 7 #25-14, La Candelaria</div>
                 <div class="description">Angus beef, chicharrón crujiente, hogao, aguacate y queso costeño en pan de arepa</div>
-                <button class="outline-btn" onclick="verEnMapa('Carrera 7 #25-14, La Candelaria, Bogotá')">Ver en el mapa</button>
+                <button class="outline-btn" data-i18n="viewOnMap" onclick="verEnMapa('paisa_power')">Ver en el mapa</button>
             </div>
         </div>
 
         <!-- Burger 2 - Molecular Cheese Explosion -->
-        <div class="burger-card">
+        <div class="burger-card" data-id="molecular_cheese" data-price="45000" data-rating="4.8" data-lat="4.6650" data-lng="-74.0450">
             <div class="burger-header" data-burger="2">
                 <div class="burger-img-container">
                     <img class="burger-img" src="../assets/images/cheese_burger.jpg" alt="Molecular Cheese Explosion" onerror="this.src='https://placehold.co/60x60?text=🧀'">
@@ -108,12 +108,12 @@
                 <div class="restaurant-name">Disponible en: El Cielo</div>
                 <div class="location">📍 Calle 70 #10-23, Zona Rosa</div>
                 <div class="description">Centro de queso líquido molecular, carne angus, cebolla caramelizada y pan brioche</div>
-                <button class="outline-btn" onclick="verEnMapa('Calle 70 #10-23, Zona Rosa, Bogotá')">Ver en el mapa</button>
+                <button class="outline-btn" data-i18n="viewOnMap" onclick="verEnMapa('molecular_cheese')">Ver en el mapa</button>
             </div>
         </div>
 
         <!-- Burger 3 - Lechona Burger -->
-        <div class="burger-card">
+        <div class="burger-card" data-id="lechona" data-price="38000" data-rating="4.7" data-lat="4.6700" data-lng="-74.0500">
             <div class="burger-header" data-burger="3">
                 <div class="burger-img-container">
                     <img class="burger-img" src="../assets/images/lechona_burger.jpeg" alt="Lechona Burger" onerror="this.src='https://placehold.co/60x60?text=🐷'">
@@ -128,12 +128,12 @@
                 <div class="restaurant-name">Disponible en: Mestizo</div>
                 <div class="location">📍 Carrera 13 #85-34, Chapinero</div>
                 <div class="description">Lechona crujiente, arroz de cebada, salsa de ají y pan artesanal</div>
-                <button class="outline-btn" onclick="verEnMapa('Carrera 13 #85-34, Chapinero, Bogotá')">Ver en el mapa</button>
+                <button class="outline-btn" data-i18n="viewOnMap" onclick="verEnMapa('lechona')">Ver en el mapa</button>
             </div>
         </div>
 
         <!-- Burger 4 - Ajiaco Burger -->
-        <div class="burger-card">
+        <div class="burger-card" data-id="ajiaco_burger" data-price="25000" data-rating="4.8" data-lat="4.5981" data-lng="-74.0758">
             <div class="burger-header" data-burger="4">
                 <div class="burger-img-container">
                     <img class="burger-img" src="../assets/images/ajiaco_burger.jpg" alt="Ajiaco Burger" onerror="this.src='https://placehold.co/60x60?text=🍲'">
@@ -148,12 +148,12 @@
                 <div class="restaurant-name">Disponible en: La Puerta Falsa</div>
                 <div class="location">📍 Calle 11 #6-50, La Candelaria</div>
                 <div class="description">Pollo desmechado, papas criollas, guascas, alcaparras y crema de leche en pan de maíz</div>
-                <button class="outline-btn" onclick="verEnMapa('Calle 11 #6-50, La Candelaria, Bogotá')">Ver en el mapa</button>
+                <button class="outline-btn" data-i18n="viewOnMap" onclick="verEnMapa('ajiaco_burger')">Ver en el mapa</button>
             </div>
         </div>
 
         <!-- Burger 5 - Amazonian Wild Burger -->
-        <div class="burger-card">
+        <div class="burger-card" data-id="amazonian_wild" data-price="55000" data-rating="4.9" data-lat="4.7100" data-lng="-74.0400">
             <div class="burger-header" data-burger="5">
                 <div class="burger-img-container">
                     <img class="burger-img" src="../assets/images/amazonian_burger.jpg" alt="Amazonian Wild Burger" onerror="this.src='https://placehold.co/60x60?text=🌿'">
@@ -168,12 +168,12 @@
                 <div class="restaurant-name">Disponible en: Origen</div>
                 <div class="location">📍 Carrera 12 #93-12, Usaquén</div>
                 <div class="description">Jabalí, frutas exóticas amazónicas (copuazú, camu camu), yuca frita y pan de plátano</div>
-                <button class="outline-btn" onclick="verEnMapa('Carrera 12 #93-12, Usaquén, Bogotá')">Ver en el mapa</button>
+                <button class="outline-btn" data-i18n="viewOnMap" onclick="verEnMapa('amazonian_wild')">Ver en el mapa</button>
             </div>
         </div>
 
         <!-- Burger 6 - BBQ Costilla Burger -->
-        <div class="burger-card">
+        <div class="burger-card" data-id="bbq_costilla" data-price="42000" data-rating="4.6" data-lat="4.6950" data-lng="-74.0350">
             <div class="burger-header" data-burger="6">
                 <div class="burger-img-container">
                     <img class="burger-img" src="../assets/images/bbq_burger.jpeg" alt="BBQ Costilla Burger" onerror="this.src='https://placehold.co/60x60?text=🥩'">
@@ -188,7 +188,7 @@
                 <div class="restaurant-name">Disponible en: El Corral Gourmet</div>
                 <div class="location">📍 Calle 85 #15-28, Chicó</div>
                 <div class="description">Costilla desmechada en BBQ artesanal, aros de cebolla, queso ahumado y pan de papa</div>
-                <button class="outline-btn" onclick="verEnMapa('Calle 85 #15-28, Chicó, Bogotá')">Ver en el mapa</button>
+                <button class="outline-btn" data-i18n="viewOnMap" onclick="verEnMapa('bbq_costilla')">Ver en el mapa</button>
             </div>
         </div>
 
@@ -297,6 +297,7 @@
     </div>
 
     <script src="../js/data.js"></script>
+    <script src="../js/i18n.js"></script>
     <script>
         // ----- TEMA OSCURO/CLARO -----
         const themeToggle = document.getElementById('themeToggle');
@@ -367,12 +368,16 @@
             }
         }
         
-        // ----- FUNCIÓN VER EN MAPA (con Google Maps) -----
-        function verEnMapa(direccion) {
-            // Codificar la dirección para URL
-            const direccionCodificada = encodeURIComponent(direccion);
-            // Abrir Google Maps con la dirección
-            window.open(`https://www.google.com/maps/search/?api=1&query=${direccionCodificada}`, '_blank');
+        // ----- FUNCIÓN VER EN MAPA (redirige al mapa interno del evento) -----
+        function verEnMapa(idOrAddress) {
+            if (!idOrAddress) { window.location.href = 'map_event.html'; return; }
+            // If it's a simple id token, navigate to internal event map with ?dish=id
+            if (/^[a-z0-9_-]+$/i.test(idOrAddress)) {
+                window.location.href = `map_event.html?dish=${encodeURIComponent(idOrAddress)}`;
+                return;
+            }
+            // Fallback: open event map without specific dish
+            window.location.href = 'map_event.html';
         }
         
         // ----- BOTÓN ATRÁS -----
@@ -395,5 +400,30 @@
             });
         });
     </script>
+        <script>
+            // Collect burgers shown on this page and persist them (so map_event can read exact same items)
+            (function(){
+                try {
+                    const cards = Array.from(document.querySelectorAll('.burger-card'));
+                    const participants = cards.map(card => {
+                        const id = card.dataset.id || (card.querySelector('.burger-name')?.textContent || '').toLowerCase().replace(/\s+/g,'_').replace(/[^\w-]/g,'');
+                        const nombre = card.querySelector('.burger-name')?.textContent?.trim() || '';
+                        const restauranteEl = card.querySelector('.restaurant-name');
+                        const restaurante = restauranteEl ? restauranteEl.textContent.replace(/Disponible en:\s*/i,'').trim() : '';
+                        const precio = card.dataset.price ? parseInt(card.dataset.price,10) : null;
+                        const estrellasText = card.querySelector('.burger-stars')?.textContent || '';
+                        const estrellas = (estrellasText.match(/[0-9]+(\.[0-9]+)?/) || [null])[0];
+                        const imagenEl = card.querySelector('img.burger-img') || card.querySelector('img');
+                        const imagen = imagenEl ? imagenEl.getAttribute('src') : '';
+                        const descripcion = card.querySelector('.description')?.textContent?.trim() || '';
+                        const lat = card.dataset.lat ? parseFloat(card.dataset.lat) : null;
+                        const lng = card.dataset.lng ? parseFloat(card.dataset.lng) : null;
+                        return { id, nombre, restaurante, precio, estrellas: estrellas ? parseFloat(estrellas) : null, imagen, descripcion, lat, lng };
+                    });
+                    // Persist exact participant objects for the event map
+                    localStorage.setItem('foodtales_event_participants', JSON.stringify(participants));
+                } catch (e) { console.warn('Failed to save event participants', e); }
+            })();
+        </script>
 </body>
 </html>
