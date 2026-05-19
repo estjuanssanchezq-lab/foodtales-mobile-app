@@ -128,7 +128,7 @@
     return el;
   }
 
-  function showPlatoPopup(p){
+  function createPopupForPlato(p){
     const node = document.createElement('div');
     node.className = 'map-popup-card';
     node.innerHTML = `
@@ -144,10 +144,15 @@
         <div class="map-popup-actions"><button class="map-popup-btn">Ver Detalles</button></div>
       </div>
     `;
-    // Popup originates at the pin; no close button (user closes by tapping outside)
-    const popup = new maplibregl.Popup({ offset: [0, -18], closeButton: false }).setDOMContent(node).setLngLat([p.lng,p.lat]).addTo(map);
+    const popup = new maplibregl.Popup({ offset: [0, -18], closeButton: false }).setDOMContent(node);
     const viewBtn = node.querySelector('.map-popup-btn');
     if (viewBtn) viewBtn.addEventListener('click', ()=> { window.location.href = `dish-detail.html?dish=${p.id}`; });
+    return popup;
+  }
+
+  function showPlatoPopup(p){
+    const popup = createPopupForPlato(p);
+    popup.setLngLat([p.lng,p.lat]).addTo(map);
   }
 
   function addMarkersForPlatos(platosArray){
@@ -155,8 +160,12 @@
     platosArray.forEach(p=>{
       if (!p.lat || !p.lng) return;
       const el = createPinElement();
-      el.addEventListener('click', (e)=>{ e.stopPropagation(); showPlatoPopup(p); map.easeTo({ center:[p.lng,p.lat], zoom:14, offset:[0,-100] }); });
       const marker = new maplibregl.Marker(el).setLngLat([p.lng,p.lat]).addTo(map);
+      // Attach popup to marker but do not open it when clicking the nearby list
+      const popup = createPopupForPlato(p);
+      marker.setPopup(popup);
+      // Click on the pin: center the map and open popup
+      el.addEventListener('click', (e)=>{ e.stopPropagation(); map.easeTo({ center:[p.lng,p.lat], zoom:14, offset:[0,-100] }); try { marker.togglePopup(); } catch(err) { popup.addTo(map); } });
       currentMarkers.push(marker);
     });
   }
@@ -224,8 +233,10 @@
       const el = document.createElement('div');
       el.className = 'map-marker route-marker';
       el.innerHTML = `<div class="pin route-pin">${idx+1}</div>`;
-      el.addEventListener('click', ()=>{ showPlatoPopup(p); map.easeTo({center:[p.lng,p.lat], zoom:14, offset:[0,-100]}); });
       const marker = new maplibregl.Marker(el).setLngLat([p.lng,p.lat]).addTo(map);
+      const popup = createPopupForPlato(p);
+      marker.setPopup(popup);
+      el.addEventListener('click', (e)=>{ e.stopPropagation(); map.easeTo({center:[p.lng,p.lat], zoom:14, offset:[0,-100]}); try { marker.togglePopup(); } catch(err){ popup.addTo(map); } });
       currentMarkers.push(marker);
     });
     if (coords.length > 1){

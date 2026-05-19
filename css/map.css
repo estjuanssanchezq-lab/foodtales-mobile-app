@@ -124,7 +124,7 @@ html, body { height:100%; margin:0; font-family: -apple-system, BlinkMacSystemFo
 /* Popup (custom map popup) */
 /* Reset maplibre popup content padding so our node defines the visual */
 .maplibregl-popup-content { padding: 0 !important; background: transparent !important; }
-.maplibregl-popup { box-shadow: none !important; }
+.maplibregl-popup { box-shadow: none !important; z-index: 9999 !important; }
 
 /* Card inserted as popup content */
 .map-popup-card { width: 260px; display:flex; flex-direction:column; gap:8px; border-radius:12px; padding:10px; box-sizing:border-box; }
