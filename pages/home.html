@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>FoodTales - Descubre comida</title>
+    <title>FoodTales - Inicio</title>
     <link rel="stylesheet" href="../css/home.css">
 </head>
 <body class="dark">
@@ -11,7 +11,7 @@
         <div class="header">
             <div class="logo">
                 <h1>🍜 FoodTales</h1>
-                <p>descubre sabores cerca de ti</p>
+                <p>Descubre sabores cerca de ti</p>
             </div>
             <div class="user-info">
                 <span id="userNameDisplay"></span>
@@ -19,59 +19,45 @@
             </div>
         </div>
 
-        <!-- Filtros -->
-        <div class="filters-section">
-            <div class="filters-title">🎯 Filtra tu experiencia</div>
-            <div class="filters-grid">
-                <div class="filter-group">
-                    <label>🧂 Sabor</label>
-                    <input type="range" id="saborFilter" min="1" max="10" value="1">
-                    <div class="sabor-slider">
-                        <span>Salado</span>
-                        <span>🌶️</span>
-                        <span>Dulce</span>
-                    </div>
-                </div>
-                <div class="filter-group">
-                    <label>⏱️ Tiempo máximo (min)</label>
-                    <input type="number" id="tiempoFilter" value="60" min="5" max="120">
-                </div>
-                <div class="filter-group">
-                    <label>💰 Precio máximo (COP)</label>
-                    <input type="number" id="precioFilter" value="50000" min="5000" max="100000" step="5000">
-                </div>
-                <div class="filter-group">
-                    <label>📏 Distancia máxima (km)</label>
-                    <input type="number" id="distanciaFilter" value="5" min="0.5" max="20" step="0.5">
-                </div>
-                <div class="filter-group">
-                    <label>⭐ Calificación mínima</label>
-                    <select id="estrellasFilter">
-                        <option value="0">Todas</option>
-                        <option value="4">4+ estrellas</option>
-                        <option value="4.5">4.5+ estrellas</option>
-                    </select>
-                </div>
+        <!-- Evento Burger Master 2026 -->
+        <div class="event-card">
+            <div class="event-title">🍔 Burger Master 2026</div>
+            <div class="event-subtitle">El mejor festival de hamburguesas de la ciudad</div>
+            <button class="event-btn" id="exploreEventBtn">Explorar evento ➡️</button>
+        </div>
+
+        <!-- Título sección -->
+        <div class="section-title">🍽️ ¿Qué quieres comer ahora?</div>
+
+        <!-- Grid de categorías -->
+        <div class="categories-grid">
+            <div class="category-card" data-category="desayuno">
+                <div class="category-icon">🍳</div>
+                <div class="category-name">Desayuno</div>
             </div>
-            <button class="btn-primary" id="applyFilters" style="margin-top: 15px; width: 100%;">🔍 Aplicar filtros</button>
+            <div class="category-card" data-category="almuerzo">
+                <div class="category-icon">🍲</div>
+                <div class="category-name">Almuerzo</div>
+            </div>
+            <div class="category-card" data-category="cena">
+                <div class="category-icon">🍽️</div>
+                <div class="category-name">Cena</div>
+            </div>
+            <div class="category-card" data-category="postre">
+                <div class="category-icon">🍰</div>
+                <div class="category-name">Postre</div>
+            </div>
         </div>
 
-        <!-- Resultados -->
-        <div id="resultsContainer">
-            <div class="platos-grid" id="platosGrid"></div>
+        <!-- Botón explorar en el mapa -->
+        <div class="map-btn-container">
+            <button class="map-btn" id="exploreMapBtn">📍 Explorar en el mapa</button>
         </div>
-    </div>
-
-    <!-- Barra de comparación flotante -->
-    <div id="compareBar" class="compare-bar">
-        <span id="compareCount">0</span> platos seleccionados para comparar
-        <button id="compareBtn">Comparar ➡️</button>
-        <button id="clearCompareBtn">Limpiar</button>
     </div>
 
     <!-- Bottom navigation -->
     <div class="bottom-nav">
-        <button class="nav-item" data-page="home">🏠</button>
+        <button class="nav-item active" data-page="home">🏠</button>
         <button class="nav-item" data-page="map">📍</button>
         <button class="nav-item" data-page="favorites">❤️</button>
         <button class="nav-item" data-page="profile">👤</button>
@@ -79,7 +65,6 @@
 
     <script src="../js/data.js"></script>
     <script>
-    (async function(){
         // ----- TEMA OSCURO/CLARO -----
         const themeToggle = document.getElementById('themeToggle');
         const body = document.body;
@@ -124,194 +109,49 @@
         }
         loadUserName();
         
-        // ----- ALERGIAS DEL USUARIO -----
-        function normalizeText(text) {
-            return text ? text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase() : '';
-        }
-
-        function getCurrentUserAllergies() {
-            const currentUser = JSON.parse(localStorage.getItem('foodtales_current_user'));
-            if (!currentUser) return [];
-            const users = JSON.parse(localStorage.getItem('foodtales_users')) || [];
-            const user = users.find(u => u.email === currentUser.email);
-            return (user?.profileData?.alergias || []).map(normalizeText).filter(Boolean);
-        }
-
-        function getDishAllergyWarning(plato) {
-            const allergies = getCurrentUserAllergies();
-            if (!allergies.length) return '';
-
-            const ingredients = (plato.ingredientes || []).map(normalizeText);
-            const name = normalizeText(plato.nombre);
-            const found = allergies.filter(allergy => {
-                return ingredients.some(ing => ing.includes(allergy)) || name.includes(allergy);
-            });
-
-            if (found.length) {
-                const uniqueAllergies = [...new Set(found)].join(', ');
-                return `Cuidado: puede contener ${uniqueAllergies}.`;
-            }
-            return '';
-        }
-
-        function checkDishAllergies(plato) {
-            const warning = getDishAllergyWarning(plato);
-            if (!warning) return false;
-            alert(`Cuidado: este plato contiene ingredientes relacionados con tu alergia a ${warning.replace('Cuidado: puede contener ', '')}`);
-            return true;
-        }
-
-        // ----- VARIABLES GLOBALES -----
-        let platosData = await window.loadPlatos();
-        let selectedForCompare = []; // Array de IDs para comparar
-        
-        // ----- FILTRADO DE PLATOS -----
-        function filterPlatos() {
-            const saborMax = parseInt(document.getElementById('saborFilter').value);
-            const tiempoMax = parseInt(document.getElementById('tiempoFilter').value);
-            const precioMax = parseInt(document.getElementById('precioFilter').value);
-            const distanciaMax = parseFloat(document.getElementById('distanciaFilter').value);
-            const estrellasMin = parseFloat(document.getElementById('estrellasFilter').value);
-            
-            return platosData.filter(plato => {
-                if (plato.sabor > saborMax) return false;
-                if (plato.tiempoPreparacion > tiempoMax) return false;
-                if (plato.precio > precioMax) return false;
-                if (plato.distancia > distanciaMax) return false;
-                if (estrellasMin > 0 && plato.estrellas < estrellasMin) return false;
-                return true;
-            });
-        }
-        
-        // ----- RENDERIZAR PLATOS -----
-        function renderPlatos() {
-            const filtrados = filterPlatos();
-            const grid = document.getElementById('platosGrid');
-            
-            if (filtrados.length === 0) {
-                grid.innerHTML = '<div class="no-results">😢 No encontramos platos con esos filtros. ¡Intenta con valores más amplios!</div>';
-                return;
-            }
-            
-            grid.innerHTML = filtrados.map(plato => `
-                <div class="plato-card" data-id="${plato.id}">
-                    <img class="plato-img" src="${plato.imagen}" alt="${plato.nombre}" onerror="this.src='https://placehold.co/400x200?text=${plato.nombre}'">
-                    <div class="plato-info">
-                        <div class="plato-nombre">${plato.nombre}</div>
-                        <div class="plato-restaurante">🏠 ${plato.restaurante}</div>
-                        ${getDishAllergyWarning(plato) ? `<div class="allergy-warning" style="color: #b71c1c; font-weight: 700; margin-bottom: 6px;">⚠️ ${getDishAllergyWarning(plato)}</div>` : ''}
-                        <div class="plato-stars">${'⭐'.repeat(Math.floor(plato.estrellas))} ${plato.estrellas}</div>
-                        <div class="plato-details">
-                            <span>📏 ${plato.distancia} km (${plato.tiempoCaminando} min)</span>
-                            <span>💰 $${plato.precio.toLocaleString()}</span>
-                        </div>
-                        <div class="plato-actions">
-                            <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
-                                <input type="checkbox" class="compare-checkbox" value="${plato.id}" ${selectedForCompare.includes(plato.id) ? 'checked' : ''}>
-                                📊 Comparar
-                            </label>
-                            <button class="favorite-btn" data-id="${plato.id}">${isFavorito(plato.id) ? '❤️' : '🤍'}</button>
-                            <button class="btn-secondary" style="padding: 4px 12px; font-size: 0.75rem;" onclick="verDetalle('${plato.id}')">Ver más</button>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-            
-            // Eventos de checkbox
-            document.querySelectorAll('.compare-checkbox').forEach(cb => {
-                cb.addEventListener('change', (e) => {
-                    const id = cb.value;
-                    const platoSeleccionado = platosData.find(p => p.id === id);
-                    if (cb.checked) {
-                        if (platoSeleccionado) {
-                            checkDishAllergies(platoSeleccionado);
-                        }
-                        if (selectedForCompare.length < 2) {
-                            if (!selectedForCompare.includes(id)) selectedForCompare.push(id);
-                        } else {
-                            cb.checked = false;
-                            alert('Solo puedes comparar 2 platos a la vez');
-                        }
-                    } else {
-                        selectedForCompare = selectedForCompare.filter(i => i !== id);
-                    }
-                    updateCompareBar();
-                });
-            });
-            
-            // Eventos de favoritos
-            document.querySelectorAll('.favorite-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const id = btn.getAttribute('data-id');
-                    if (isFavorito(id)) {
-                        removeFavorito(id);
-                        btn.textContent = '🤍';
-                    } else {
-                        addFavorito(id);
-                        btn.textContent = '❤️';
-                    }
-                });
-            });
-        }
-        
-        function updateCompareBar() {
-            const bar = document.getElementById('compareBar');
-            const countSpan = document.getElementById('compareCount');
-            countSpan.textContent = selectedForCompare.length;
-            if (selectedForCompare.length === 2) {
-                bar.classList.add('show');
-            } else {
-                bar.classList.remove('show');
-            }
-        }
-        
-        function verDetalle(id) {
-            const plato = platosData.find(p => p.id === id);
-            if (plato) {
-                checkDishAllergies(plato);
-            }
-            window.location.href = `dish-detail.html?id=${id}`;
-        }
-        
-        // Eventos de la barra de comparación
-        document.getElementById('applyFilters').addEventListener('click', () => {
-            renderPlatos();
+        // ----- EVENTOS -----
+        document.getElementById('exploreEventBtn').addEventListener('click', () => {
+            window.location.href = 'evento.html';
         });
         
-        document.getElementById('compareBtn').addEventListener('click', () => {
-            if (selectedForCompare.length === 2) {
-                window.location.href = `compare.html?id1=${selectedForCompare[0]}&id2=${selectedForCompare[1]}`;
-            }
+        document.getElementById('exploreMapBtn').addEventListener('click', () => {
+            window.location.href = 'map.html';
         });
         
-        document.getElementById('clearCompareBtn').addEventListener('click', () => {
-            selectedForCompare = [];
-            updateCompareBar();
-            renderPlatos();
+        // ----- CATEGORÍAS SELECCIONABLES -----
+        let selectedCategory = null;
+        
+        document.querySelectorAll('.category-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const category = card.getAttribute('data-category');
+                
+                // Remover clase selected de todas las categorías
+                document.querySelectorAll('.category-card').forEach(c => {
+                    c.classList.remove('selected');
+                });
+                
+                // Agregar clase selected a la categoría clickeada
+                card.classList.add('selected');
+                selectedCategory = category;
+                
+                // Mostrar feedback visual
+                console.log(`🍽️ Categoría seleccionada: ${category}`);
+                
+                // Aquí puedes agregar la lógica para mostrar platos de esa categoría
+                // mostrarPlatosPorCategoria(category);
+            });
         });
         
         // ----- NAVEGACIÓN UNIFICADA -----
         document.querySelectorAll('.nav-item').forEach(btn => {
             btn.addEventListener('click', () => {
                 const page = btn.getAttribute('data-page');
-                if (page === 'home') window.location.href = 'pag_inicial.html';
+                if (page === 'home') window.location.href = 'home.html';
                 else if (page === 'map') window.location.href = 'map.html';
                 else if (page === 'favorites') window.location.href = 'favorites.html';
-                else if (page === 'profile') window.location.href = 'perfil.html';
+                else if (page === 'profile') window.location.href = 'profile.html';
             });
         });
-        
-        // Inicializar
-        renderPlatos();
-        
-        // Filtrar automático al cambiar cualquier filtro (opcional)
-        const filtros = ['saborFilter', 'tiempoFilter', 'precioFilter', 'distanciaFilter', 'estrellasFilter'];
-        filtros.forEach(id => {
-            document.getElementById(id).addEventListener('change', () => renderPlatos());
-            document.getElementById(id).addEventListener('input', () => renderPlatos());
-        });
-    })();
     </script>
 </body>
 </html>

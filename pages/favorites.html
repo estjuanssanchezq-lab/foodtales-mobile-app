@@ -152,10 +152,10 @@
         document.querySelectorAll('.nav-item').forEach(btn => {
             btn.addEventListener('click', () => {
                 const page = btn.getAttribute('data-page');
-                if (page === 'home') window.location.href = 'pag_inicial.html';
+                if (page === 'home') window.location.href = 'home.html';
                 else if (page === 'map') window.location.href = 'map.html';
                 else if (page === 'favorites') window.location.href = 'favorites.html';
-                else if (page === 'profile') window.location.href = 'perfil.html';
+                else if (page === 'profile') window.location.href = 'profile.html';
             });
         });
     })();
