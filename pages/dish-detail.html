@@ -69,7 +69,7 @@
             return urlParams.get(param);
         }
 
-        const platoId = getQueryParam('id');
+        const platoId = getQueryParam('id') || getQueryParam('dish');
         const platosData = await window.loadPlatos();
         const plato = (platosData || []).find(p => p.id === platoId);
 
