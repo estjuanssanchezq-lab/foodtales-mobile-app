@@ -335,16 +335,37 @@ body.light .map-placeholder { background: #eaeaea; }
 .btn-directions { background-color:#1e1e1e; color:#ffb347; border:1px solid rgba(255,255,255,0.04); }
 body.light .btn-directions { background-color:#e0e0e0; color:#e07c1f; }
 
-/* Accordions */
-.accordion { background: var(--card-bg); border:1px solid var(--muted-border); border-radius:12px; margin-bottom:12px; overflow:hidden; }
-.accordion .accordion-toggle { width:100%; padding:14px 16px; display:flex; align-items:center; justify-content:space-between; background:transparent; border:none; color:#fff; font-weight:800; cursor:pointer; }
-.accordion .accordion-icon { transition: transform 220ms ease; color:#ffb347; }
-.accordion .accordion-icon { transition: transform 220ms ease; color:var(--gold); margin-left:12px; }
-.accordion .accordion-title { font-size:1.18rem; font-weight:900; }
-.accordion .accordion-panel { max-height:0; overflow:hidden; transition: max-height 280ms ease; padding:0 16px 0 16px; color:#d0d0d0; }
-.accordion.open .accordion-panel { padding:12px 16px 16px 16px; }
-.accordion.open .accordion-icon { transform: rotate(180deg); }
-.accordion:hover { border-color: rgba(255,255,255,0.06); }
+/* Accordions: exact burger-card visual pattern from event.html */
+.accordion { margin-bottom: 1.5rem; }
+.accordion .accordion-toggle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding: 1rem 1.5rem;
+    border-radius: 20px;
+    transition: all 0.2s;
+    background: var(--card-bg);
+    border: 1px solid var(--muted-border);
+    width: 100%;
+    box-sizing: border-box;
+}
+body.dark .accordion .accordion-toggle { background: #1a1a1a; border: 1px solid #333; color: #ffffff; }
+body.light .accordion .accordion-toggle { background: #ffffff; border: 1px solid #ddd; box-shadow: 0 2px 8px rgba(0,0,0,0.05); color: #111111; }
+.accordion:hover .accordion-toggle { border-color: var(--gold); }
+.accordion .accordion-title { font-size: 1.1rem; font-weight: bold; flex: 1; margin-right: 12px; }
+.accordion .accordion-icon { font-size: 1.2rem; transition: transform 0.3s; flex-shrink: 0; margin-left: 12px; }
+
+/* Panel: collapsed -> no content visible; expanded -> border-top + spacing like event burger-details */
+.accordion .accordion-panel { max-height: 0; overflow: hidden; transition: max-height 0.3s ease, opacity 0.18s linear; padding: 0 1.5rem; color: var(--muted-text); opacity: 0; }
+.accordion.open .accordion-panel { max-height: 1000px; padding: 1rem 1.5rem; margin-top: 1rem; border-top: 1px solid; opacity: 1; }
+body.dark .accordion.open .accordion-panel { border-top-color: #333; }
+body.light .accordion.open .accordion-panel { border-top-color: #ddd; }
+.accordion.open .accordion-icon { transform: rotate(90deg); }
+
+/* defensive: ensure accordions are full-width cards, not inline/pill elements */
+.accordion .accordion-toggle { display: flex; }
+.accordion .accordion-toggle, .accordion .accordion-title { width: 100%; }
 
 /* Bottom nav */
 .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; display:flex; justify-content:space-around; align-items:center; padding:10px 20px; backdrop-filter: blur(8px); border-top:1px solid; z-index:90; }

@@ -19,39 +19,39 @@
             </div>
         </div>
 
-        <!-- Evento Burger Master 2026 -->
+        <!-- Evento Burger Master -->
         <div class="event-card">
-            <div class="event-title">🍔 Burger Master 2026</div>
-            <div class="event-subtitle">El mejor festival de hamburguesas de la ciudad</div>
-            <button class="event-btn" id="exploreEventBtn">Explorar evento ➡️</button>
+            <div class="event-title">Burger Master</div>
+            <div class="event-subtitle" data-i18n="bestBurgerFestival">El mejor festival de hamburguesas de la ciudad</div>
+            <button class="event-btn" id="exploreEventBtn" data-i18n="exploreEvent">Explorar Evento</button>
         </div>
 
         <!-- Título sección -->
-        <div class="section-title">🍽️ ¿Qué quieres comer ahora?</div>
+        <div class="section-title" data-i18n="whatToEatNow">🍽️ ¿Qué quieres comer ahora?</div>
 
         <!-- Grid de categorías -->
         <div class="categories-grid">
             <div class="category-card" data-category="desayuno">
                 <div class="category-icon">🍳</div>
-                <div class="category-name">Desayuno</div>
+                <div class="category-name" data-i18n="breakfast">Desayuno</div>
             </div>
             <div class="category-card" data-category="almuerzo">
                 <div class="category-icon">🍲</div>
-                <div class="category-name">Almuerzo</div>
+                <div class="category-name" data-i18n="lunch">Almuerzo</div>
             </div>
             <div class="category-card" data-category="cena">
                 <div class="category-icon">🍽️</div>
-                <div class="category-name">Cena</div>
+                <div class="category-name" data-i18n="dinner">Cena</div>
             </div>
             <div class="category-card" data-category="postre">
                 <div class="category-icon">🍰</div>
-                <div class="category-name">Postre</div>
+                <div class="category-name" data-i18n="desserts">Postre</div>
             </div>
         </div>
 
         <!-- Botón explorar en el mapa -->
         <div class="map-btn-container">
-            <button class="map-btn" id="exploreMapBtn">📍 Explorar en el mapa</button>
+            <button class="map-btn" id="exploreMapBtn" data-i18n="exploreMap">📍 Explorar en el mapa</button>
         </div>
     </div>
 
@@ -64,6 +64,7 @@
     </div>
 
     <script src="../js/data.js"></script>
+    <script src="../js/i18n.js"></script>
     <script>
         // ----- TEMA OSCURO/CLARO -----
         const themeToggle = document.getElementById('themeToggle');
@@ -111,34 +112,27 @@
         
         // ----- EVENTOS -----
         document.getElementById('exploreEventBtn').addEventListener('click', () => {
-            window.location.href = 'evento.html';
+            window.location.href = 'event.html';
         });
         
         document.getElementById('exploreMapBtn').addEventListener('click', () => {
             window.location.href = 'map.html';
         });
         
-        // ----- CATEGORÍAS SELECCIONABLES -----
-        let selectedCategory = null;
-        
+        // ----- CATEGORÍAS: navegar al mapa con filtro -----
+        const categoryMap = {
+            'desayuno': 'breakfast',
+            'almuerzo': 'lunch',
+            'cena': 'dinner',
+            'postre': 'desserts'
+        };
+
         document.querySelectorAll('.category-card').forEach(card => {
             card.addEventListener('click', () => {
                 const category = card.getAttribute('data-category');
-                
-                // Remover clase selected de todas las categorías
-                document.querySelectorAll('.category-card').forEach(c => {
-                    c.classList.remove('selected');
-                });
-                
-                // Agregar clase selected a la categoría clickeada
-                card.classList.add('selected');
-                selectedCategory = category;
-                
-                // Mostrar feedback visual
-                console.log(`🍽️ Categoría seleccionada: ${category}`);
-                
-                // Aquí puedes agregar la lógica para mostrar platos de esa categoría
-                // mostrarPlatosPorCategoria(category);
+                const param = categoryMap[category] || '';
+                // navigate to map with filter param
+                if (param) window.location.href = `map.html?filter=${encodeURIComponent(param)}`;
             });
         });
         

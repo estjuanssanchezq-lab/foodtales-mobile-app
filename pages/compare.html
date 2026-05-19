@@ -12,6 +12,7 @@
             <div class="left">
                 <button class="btn-circle back-btn" id="backBtn" aria-label="Volver">←</button>
             </div>
+
             <div class="center">
                 <img class="compare-thumb" id="compareThumb" src="" alt="">
                 <div class="compare-title">
@@ -19,12 +20,13 @@
                     <div class="subtitle">Escoge dónde probarlo</div>
                 </div>
             </div>
+
             <div class="right">
                 <button class="btn-circle" id="themeToggle">🌙</button>
             </div>
         </div>
 
-        <div id="compareContent">
+        <div id="compareContent" class="compare-content theme-applied">
             <div style="text-align: center; padding: 3rem;">Cargando...</div>
         </div>
     </div>
@@ -37,12 +39,15 @@
     </div>
 
     <script src="../js/data.js"></script>
+    <script src="../js/i18n.js"></script>
+
     <script>
-    (async function(){
+    (async function () {
         const body = document.body;
 
         function loadTheme() {
             const savedTheme = localStorage.getItem('foodtales_theme');
+
             if (savedTheme === 'light') {
                 body.classList.remove('dark');
                 body.classList.add('light');
@@ -50,24 +55,33 @@
                 body.classList.remove('light');
                 body.classList.add('dark');
             }
+
+            updateThemeIcon();
+        }
+
+        function updateThemeIcon() {
+            const themeToggle = document.getElementById('themeToggle');
+            if (!themeToggle) return;
+
+            themeToggle.textContent = body.classList.contains('light') ? '☀️' : '🌙';
         }
 
         function initThemeToggle() {
             const themeToggle = document.getElementById('themeToggle');
             if (!themeToggle) return;
-            themeToggle.textContent = body.classList.contains('light') ? '☀️' : '🌙';
+
             themeToggle.addEventListener('click', () => {
                 if (body.classList.contains('dark')) {
                     body.classList.remove('dark');
                     body.classList.add('light');
                     localStorage.setItem('foodtales_theme', 'light');
-                    themeToggle.textContent = '☀️';
                 } else {
                     body.classList.remove('light');
                     body.classList.add('dark');
                     localStorage.setItem('foodtales_theme', 'dark');
-                    themeToggle.textContent = '🌙';
                 }
+
+                updateThemeIcon();
             });
         }
 
@@ -80,16 +94,24 @@
 
         const dishId = getQueryParam('dish');
         const platosData = await window.loadPlatos();
+
         let plato = (platosData || []).find(p => p.id === dishId);
-        if (!plato) plato = (platosData && platosData.length) ? platosData[0] : null;
 
         if (!plato) {
-            document.getElementById('compareContent').innerHTML = `<div class="no-compare"><p>😢 No hay datos disponibles.</p></div>`;
+            plato = (platosData && platosData.length) ? platosData[0] : null;
+        }
+
+        if (!plato) {
+            document.getElementById('compareContent').innerHTML = `
+                <div class="no-compare">
+                    <p>😢 No hay datos disponibles.</p>
+                </div>
+            `;
             return;
         }
 
-        // Header
         document.getElementById('compareDishName').textContent = plato.nombre;
+
         const thumb = document.getElementById('compareThumb');
         thumb.src = plato.imagen;
         thumb.alt = plato.nombre;
@@ -109,31 +131,53 @@
                         <div class="info-grid-2x2">
                             <div class="info-box">
                                 <div class="info-icon">📍</div>
-                                <div class="info-meta"><div class="info-label">Distancia</div><div class="info-value">${plato.distancia} km</div></div>
+                                <div class="info-meta">
+                                    <div class="info-label">Distancia</div>
+                                    <div class="info-value">${plato.distancia} km</div>
+                                </div>
                             </div>
+
                             <div class="info-box">
                                 <div class="info-icon">⏱️</div>
-                                <div class="info-meta"><div class="info-label">Caminando</div><div class="info-value">${plato.tiempoCaminando} min</div></div>
+                                <div class="info-meta">
+                                    <div class="info-label">Caminando</div>
+                                    <div class="info-value">${plato.tiempoCaminando} min</div>
+                                </div>
                             </div>
+
                             <div class="info-box">
                                 <div class="info-icon">💵</div>
-                                <div class="info-meta"><div class="info-label">Precio</div><div class="info-value">${plato.moneda || ''} ${plato.precio.toLocaleString()}</div></div>
+                                <div class="info-meta">
+                                    <div class="info-label">Precio</div>
+                                    <div class="info-value">${plato.moneda || ''} ${Number(plato.precio).toLocaleString()}</div>
+                                </div>
                             </div>
+
                             <div class="info-box">
                                 <div class="info-icon">⭐</div>
-                                <div class="info-meta"><div class="info-label">Rating</div><div class="info-value">${plato.estrellas}</div></div>
+                                <div class="info-meta">
+                                    <div class="info-label">Rating</div>
+                                    <div class="info-value">${plato.estrellas}</div>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="schedule"><strong>Horario</strong><div>${plato.horarios}</div></div>
+                        <div class="schedule">
+                            <strong>Horario</strong>
+                            <div>${plato.horarios}</div>
+                        </div>
 
-                        <button class="btn-try" id="tryHereBtn">↗ Try Here</button>
+                        <button class="btn-try" id="tryHereBtn">↗ Ver en Maps</button>
                     </div>
                 </div>
             `;
         }
 
         document.getElementById('compareContent').innerHTML = renderRestaurantCard(plato);
+
+        if (window.i18n && window.i18n.applyLanguage) {
+            window.i18n.applyLanguage();
+        }
 
         document.getElementById('tryHereBtn')?.addEventListener('click', () => {
             const url = `https://www.google.com/maps/dir/?api=1&destination=${plato.lat},${plato.lng}`;
@@ -149,10 +193,16 @@
         document.querySelectorAll('.nav-item').forEach(btn => {
             btn.addEventListener('click', () => {
                 const page = btn.getAttribute('data-page');
-                if (page === 'home') window.location.href = 'home.html';
-                else if (page === 'map') window.location.href = 'map.html';
-                else if (page === 'favorites') window.location.href = 'favorites.html';
-                else if (page === 'profile') window.location.href = 'profile.html';
+
+                if (page === 'home') {
+                    window.location.href = 'home.html';
+                } else if (page === 'map') {
+                    window.location.href = 'map.html';
+                } else if (page === 'favorites') {
+                    window.location.href = 'favorites.html';
+                } else if (page === 'profile') {
+                    window.location.href = 'profile.html';
+                }
             });
         });
     })();

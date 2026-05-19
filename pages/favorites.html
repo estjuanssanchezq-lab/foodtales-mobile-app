@@ -36,6 +36,7 @@
     </div>
 
     <script src="../js/data.js"></script>
+    <script src="../js/i18n.js"></script>
     <script>
     (async function(){
         // ----- TEMA OSCURO/CLARO -----
@@ -88,16 +89,19 @@
             const container = document.getElementById('favoritesContent');
             
             if (favoritos.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="emoji">💔</div>
-                        <h3>No tienes favoritos aún</h3>
-                        <p>Explora platos y guarda tus favoritos tocando el corazón ❤️</p>
-                        <button class="btn-primary" onclick="window.location.href='home.html'">Explorar platos →</button>
-                    </div>
-                `;
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <div class="emoji">💔</div>
+                            <h3 data-i18n="noFavorites">No tienes favoritos aún</h3>
+                            <p data-i18n-attr="text">Explora platos y guarda tus favoritos tocando el corazón ❤️</p>
+                            <button class="btn-primary" onclick="window.location.href='home.html'" data-i18n="exploreDishes">Explorar platos →</button>
+                        </div>
+                    `;
                 return;
             }
+
+                // Reapply translations for dynamically inserted content
+                if (window.i18n && window.i18n.applyLanguage) window.i18n.applyLanguage();
             
             container.innerHTML = `
                 <div class="platos-grid">

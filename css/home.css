@@ -6,6 +6,15 @@
     transition: all 0.2s ease;
 }
 
+:root{
+    --event-orange: #ff6a00;
+    --event-orange-hover: #e65a00;
+    --event-orange-border: rgba(255,106,0,0.16);
+    --event-glow: rgba(255,106,0,0.12);
+    --event-glow-weak: rgba(255,106,0,0.06);
+    --event-glow-strong: rgba(255,106,0,0.18);
+}
+
 body {
     font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     min-height: 100vh;
@@ -366,10 +375,48 @@ body.light .nav-item {
     background-size: cover;
     background-position: center;
     border-radius: 25px;
+    border: 2px solid var(--event-orange-border);
     padding: 2rem;
     margin-bottom: 2rem;
     text-align: center;
     color: white;
+    /* subtle depth + glow layer */
+    box-shadow: 0 6px 18px rgba(0,0,0,0.10), 0 0 10px 2px var(--event-glow-weak);
+    will-change: box-shadow;
+    animation: eventPulse 3.5s cubic-bezier(.4,0,.2,1) infinite;
+}
+
+body.dark .event-card {
+    border-color: rgba(255,106,0,0.22);
+}
+
+body.light .event-card {
+    border-color: rgba(255,106,0,0.14);
+}
+
+/* Soft pulsing glow animation for event banner */
+@keyframes eventPulse {
+    0% {
+        box-shadow: 0 6px 18px rgba(0,0,0,0.10), 0 0 8px 1px var(--event-glow-weak);
+    }
+    50% {
+        box-shadow: 0 8px 22px rgba(0,0,0,0.12), 0 0 26px 6px var(--event-glow);
+    }
+    100% {
+        box-shadow: 0 6px 18px rgba(0,0,0,0.10), 0 0 8px 1px var(--event-glow-weak);
+    }
+}
+
+/* Tweak glow intensity for dark / light modes for subtlety */
+body.dark {
+    --event-glow: rgba(255,106,0,0.16);
+    --event-glow-weak: rgba(255,106,0,0.07);
+}
+
+/* Increase glow visibility on light backgrounds while keeping it subtle */
+body.light {
+    --event-glow: rgba(255,106,0,0.16);
+    --event-glow-weak: rgba(255,106,0,0.06);
 }
 
 .event-title {
@@ -387,24 +434,26 @@ body.light .nav-item {
 }
 
 .event-btn {
-    background: #ffb347;
-    color: #1a1a1a;
+    background: var(--event-orange);
+    color: #ffffff;
     border: none;
     padding: 12px 30px;
     border-radius: 40px;
     font-size: 1.1rem;
     font-weight: bold;
     cursor: pointer;
-    transition: transform 0.2s;
+    transition: transform 0.2s, background 0.18s;
+    box-shadow: none;
 }
 
 body.light .event-btn {
-    background: #ffb347;
-    color: #1a1a1a;
+    background: var(--event-orange);
+    color: #ffffff;
 }
 
 .event-btn:hover {
     transform: scale(1.05);
+    background: var(--event-orange-hover);
 }
 
 .section-title {

@@ -24,9 +24,10 @@
     </div>
 
     <!-- Toast (se muestra al guardar en favoritos) -->
-    <div id="toast" class="toast" aria-hidden="true">Guardado en Favoritos</div>
+    <div id="toast" class="toast" aria-hidden="true" data-i18n="favoritesSaved">Guardado en Favoritos</div>
 
     <script src="../js/data.js"></script>
+    <script src="../js/i18n.js"></script>
     <script>
     (async function(){
         const body = document.body;
@@ -110,7 +111,9 @@
         }
 
         if (!plato) {
-            document.getElementById('dishContent').innerHTML = '<div style="text-align: center; padding: 3rem;">🍽️ Plato no encontrado<br><button class="map-btn" onclick="window.location.href=\'home.html\'">Volver al inicio</button></div>';
+            const notFound = (window.i18n && typeof window.i18n.t === 'function') ? window.i18n.t('dishNotFound') : 'Plato no encontrado';
+            const backText = (window.i18n && typeof window.i18n.t === 'function') ? window.i18n.t('returnHome') : 'Volver al inicio';
+            document.getElementById('dishContent').innerHTML = `<div style="text-align: center; padding: 3rem;">🍽️ ${notFound}<br><button class="map-btn" onclick="window.location.href='home.html'">${backText}</button></div>`;
         } else {
             checkDishAllergies(plato);
         }
@@ -180,19 +183,19 @@
                         <span class="meta-item">💵 ${plato.moneda || ''} ${plato.precio.toLocaleString()}</span>
                     </div>
 
-                    <div class="content-actions hero-ctas">
-                        <div class="action-primary">
-                            <button class="cta-primary goTryBtn">↗ Go Try This</button>
-                        </div>
-                        <div class="action-row cta-secondary-row">
-                            <button class="cta-secondary viewMapBtn">📍 View on Map</button>
-                            <button class="cta-secondary comparePlacesBtn">↔ Compare Places</button>
-                        </div>
-                    </div>
+                            <div class="content-actions hero-ctas">
+                                <div class="action-primary">
+                                    <button class="cta-primary goTryBtn" data-i18n="tryThis">↗ ¡Pruébalo!</button>
+                                </div>
+                                <div class="action-row cta-secondary-row">
+                                    <button class="cta-secondary viewMapBtn" data-i18n="viewOnMap">📍 Ver en el Mapa</button>
+                                    <button class="cta-secondary comparePlacesBtn" data-i18n="comparePlaces">↔ Comparar Lugares</button>
+                                </div>
+                            </div>
                 </div>
 
                 <div class="featured-card">
-                    <div class="featured-header">📺 Mira y Aprende</div>
+                    <div class="featured-header">${(window.i18n && typeof window.i18n.t === 'function') ? window.i18n.t('watchAndLearn') : '📺 Mira y Aprende'}</div>
                     ${plato.videoUrl ? `
                         <div class="featured-media">
                             <div class="video-container">
@@ -207,18 +210,18 @@
                 </div>
 
                 <div class="accordion" id="acc-historia">
-                    <button class="accordion-toggle" aria-expanded="false" aria-controls="acc-historia-panel">
-                        <span class="accordion-title">📖 Historia del plato</span>
-                        <span class="accordion-icon">˅</span>
-                    </button>
+                    <div class="accordion-toggle" role="button" tabindex="0" aria-expanded="false" aria-controls="acc-historia-panel">
+                        <span class="accordion-title">${(window.i18n && typeof window.i18n.t === 'function') ? window.i18n.t('dishHistory') : '📖 Historia del plato'}</span>
+                        <span class="accordion-icon">▶</span>
+                    </div>
                     <div class="accordion-panel" id="acc-historia-panel"><p>${plato.historia}</p></div>
                 </div>
 
                 <div class="accordion" id="acc-ingredientes">
-                    <button class="accordion-toggle" aria-expanded="false" aria-controls="acc-ingredientes-panel">
-                        <span class="accordion-title">🥘 Ingredientes</span>
-                        <span class="accordion-icon">˅</span>
-                    </button>
+                    <div class="accordion-toggle" role="button" tabindex="0" aria-expanded="false" aria-controls="acc-ingredientes-panel">
+                        <span class="accordion-title">${(window.i18n && typeof window.i18n.t === 'function') ? window.i18n.t('ingredients') : '🥘 Ingredientes'}</span>
+                        <span class="accordion-icon">▶</span>
+                    </div>
                     <div class="accordion-panel" id="acc-ingredientes-panel">
                         <div class="ingredientes-list">
                             ${plato.ingredientes.map(ing => `<span class="ingrediente-chip">${ing}</span>`).join('')}
@@ -227,10 +230,10 @@
                 </div>
 
                 <div class="accordion" id="acc-datos">
-                    <button class="accordion-toggle" aria-expanded="false" aria-controls="acc-datos-panel">
-                        <span class="accordion-title">💡 Datos curiosos</span>
-                        <span class="accordion-icon">˅</span>
-                    </button>
+                    <div class="accordion-toggle" role="button" tabindex="0" aria-expanded="false" aria-controls="acc-datos-panel">
+                        <span class="accordion-title">${(window.i18n && typeof window.i18n.t === 'function') ? window.i18n.t('funFacts') : '💡 Datos curiosos'}</span>
+                        <span class="accordion-icon">▶</span>
+                    </div>
                     <div class="accordion-panel" id="acc-datos-panel">
                         <ul class="curiosidades">
                             ${plato.datosCuriosos.map(dato => `<li>📌 ${dato}</li>`).join('')}
@@ -239,7 +242,7 @@
                 </div>
 
                 <div class="reviews-card">
-                    <h3>🍽️ Qué opinan los comensales</h3>
+                    <h3>${(window.i18n && typeof window.i18n.t === 'function') ? window.i18n.t('whatDinersSay') : '🍽️ Qué opinan los comensales'}</h3>
                     ${plato.reviews.map(review => `
                         <div class="review">
                             <div class="review-header">
@@ -293,55 +296,77 @@
                 window.history.back();
             });
 
-            // Accordions: smooth toggle (expand to full height without cutting content)
-            document.querySelectorAll('.accordion').forEach(acc => {
-                const btn = acc.querySelector('.accordion-toggle');
+            // Accordions: use the same visual pattern as event.html burger cards
+            // - clicking anywhere on the accordion header toggles it
+            // - arrow rotates like in event.html
+            // - panel expands smoothly to its content height (no cut)
+                document.querySelectorAll('.accordion').forEach(acc => {
+                const header = acc.querySelector('.accordion-toggle');
                 const panel = acc.querySelector('.accordion-panel');
-                // initial closed state
-                panel.style.maxHeight = '0px';
-                panel.style.overflow = 'hidden';
-                panel.style.paddingTop = '0px';
-                panel.style.paddingBottom = '0px';
+                const icon = acc.querySelector('.accordion-icon');
 
-                btn.addEventListener('click', () => {
+                // keyboard support: Enter / Space on the header toggles the accordion
+                if (header) {
+                    header.addEventListener('keydown', (ev) => {
+                        if (ev.key === 'Enter' || ev.key === ' ') {
+                            ev.preventDefault();
+                            acc.click();
+                        }
+                    });
+                }
+
+                // ensure closed initial state
+                acc.classList.remove('open');
+                if (panel) {
+                    panel.style.maxHeight = '0px';
+                    panel.style.overflow = 'hidden';
+                    panel.style.paddingTop = '0px';
+                    panel.style.paddingBottom = '0px';
+                }
+
+                // make the whole header/card clickable (but ignore clicks inside the panel content)
+                acc.addEventListener('click', (e) => {
+                    if (panel && panel.contains(e.target)) return; // don't toggle when interacting with panel
                     const isOpen = acc.classList.contains('open');
                     if (!isOpen) {
-                        // opening: animate to scrollHeight then remove maxHeight to allow natural height
                         acc.classList.add('open');
-                        panel.style.overflow = 'hidden';
-                        const target = panel.scrollHeight;
-                        panel.style.maxHeight = target + 'px';
-                        panel.style.paddingTop = '';
-                        panel.style.paddingBottom = '';
-                        acc.querySelector('.accordion-icon').style.transform = 'rotate(180deg)';
-                        btn.setAttribute('aria-expanded', 'true');
-
-                        const onEnd = (e) => {
-                            if (e.target !== panel) return;
-                            // allow content to size naturally
-                            panel.style.maxHeight = 'none';
-                            panel.style.overflow = 'visible';
-                            panel.removeEventListener('transitionend', onEnd);
-                        };
-                        panel.addEventListener('transitionend', onEnd);
-                    } else {
-                        // closing: set explicit height then collapse to 0
-                        panel.style.overflow = 'hidden';
-                        // if currently 'none', set to current scrollHeight first
-                        if (panel.style.maxHeight === 'none') {
-                            panel.style.maxHeight = panel.scrollHeight + 'px';
+                        if (icon) icon.classList.add('open');
+                        if (header) header.setAttribute('aria-expanded', 'true');
+                        if (panel) {
+                            panel.style.overflow = 'hidden';
+                            const target = panel.scrollHeight;
+                            panel.style.maxHeight = target + 'px';
+                            panel.style.paddingTop = '';
+                            panel.style.paddingBottom = '';
+                            const onEnd = (ev) => {
+                                if (ev.target !== panel) return;
+                                panel.style.maxHeight = 'none';
+                                panel.style.overflow = 'visible';
+                                panel.removeEventListener('transitionend', onEnd);
+                            };
+                            panel.addEventListener('transitionend', onEnd);
                         }
-                        // force reflow
-                        void panel.offsetHeight;
-                        panel.style.paddingTop = '0px';
-                        panel.style.paddingBottom = '0px';
-                        panel.style.maxHeight = '0px';
+                    } else {
                         acc.classList.remove('open');
-                        acc.querySelector('.accordion-icon').style.transform = 'rotate(0deg)';
-                        btn.setAttribute('aria-expanded', 'false');
+                        if (icon) icon.classList.remove('open');
+                        if (header) header.setAttribute('aria-expanded', 'false');
+                        if (panel) {
+                            // animate closing from current height to 0
+                            if (panel.style.maxHeight === 'none') panel.style.maxHeight = panel.scrollHeight + 'px';
+                            // ensure overflow is hidden while collapsing so no content bleeds out
+                            panel.style.overflow = 'hidden';
+                            // force reflow
+                            void panel.offsetHeight;
+                            panel.style.paddingTop = '0px';
+                            panel.style.paddingBottom = '0px';
+                            panel.style.maxHeight = '0px';
+                        }
                     }
                 });
             });
+
+            // Apply translations to dynamic content
+            if (window.i18n && window.i18n.applyLanguage) window.i18n.applyLanguage();
         }
 
             if (plato) renderDetalle();
