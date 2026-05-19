@@ -131,59 +131,62 @@
             }, 2400);
         }
 
+        // Convierte varias formas de URLs de YouTube a la URL embebible
+        function getEmbeddableUrl(videoUrl) {
+            try {
+                const u = new URL(videoUrl);
+                const host = u.hostname.replace('www.', '');
+                if (host.includes('youtube.com')) {
+                    const v = u.searchParams.get('v');
+                    if (v) return `https://www.youtube.com/embed/${v}?rel=0`;
+                    if (u.pathname.startsWith('/embed/')) return videoUrl;
+                }
+                if (host.includes('youtu.be')) {
+                    const id = u.pathname.replace(/^\//, '');
+                    return `https://www.youtube.com/embed/${id}?rel=0`;
+                }
+                return videoUrl;
+            } catch (e) {
+                return videoUrl;
+            }
+        }
+
         // ----- RENDERIZAR DETALLE (diseño nuevo, imagen como hero) -----
         function renderDetalle() {
             const favoritoActual = isFavorito(plato.id);
-
             const heroHtml = `
                 <div class="dish-hero" aria-label="${plato.nombre}">
                     <img class="dish-hero-image" src="${plato.imagen}" alt="${plato.nombre}" onerror="this.src='https://placehold.co/800x600?text=${encodeURIComponent(plato.nombre)}'">
                     <div class="dish-hero-gradient"></div>
 
-                    <div class="hero-controls">
+                    <div class="hero-top-bar">
                         <button class="btn-circle back-button" id="backHeroBtn" aria-label="Volver">←</button>
-                        <div class="hero-controls-right">
+                        <div class="hero-actions-right">
                             <button class="btn-circle favorite-button ${favoritoActual ? 'active' : ''}" id="favHeroBtn" aria-label="Guardar">${favoritoActual ? '❤️' : '🤍'}</button>
                             <button class="btn-circle" id="themeToggle" aria-label="Alternar tema">🌙</button>
-                        </div>
-                    </div>
-
-                    <div class="dish-hero-content">
-                        <h1 class="dish-title">${plato.nombre}</h1>
-                        <div class="dish-meta-row">
-                            <span class="meta-item">🏠 ${plato.restaurante}</span>
-                            <span class="meta-item">📍 ${plato.distancia} km</span>
-                            <span class="meta-item">⏱️ ${plato.tiempoCaminando} min</span>
-                            <span class="meta-item">💵 ${plato.moneda || ''} ${plato.precio.toLocaleString()}</span>
-                        </div>
-
-                        <div class="hero-ctas">
-                            <button class="cta-primary" id="goTryBtn">↗ Go Try This</button>
-                            <div class="cta-secondary-row">
-                                <button class="cta-secondary" id="viewMapBtn">📍 View on Map</button>
-                                <button class="cta-secondary" id="comparePlacesBtn">↔ Compare Places</button>
-                            </div>
                         </div>
                     </div>
                 </div>
             `;
 
             const contentHtml = `
-                ${getDishAllergyWarning(plato) ? `<div class="allergy-warning">⚠️ ${getDishAllergyWarning(plato)}</div>` : ''}
-
-                <div class="restaurant-card">
-                    <h3>📍 Restaurante</h3>
-                    <p><strong>${plato.restaurante}</strong><br>${plato.direccion}</p>
-                    <div class="map-placeholder">
-                        <span>🗺️ Mapa</span>
-                        <button class="map-btn" id="openMapsBtn">Abrir en Google Maps →</button>
-                        <small>${plato.distancia} km de distancia (${plato.tiempoCaminando} min a pie)</small>
+                <div class="dish-info">
+                    ${getDishAllergyWarning(plato) ? `<div class="allergy-warning">⚠️ ${getDishAllergyWarning(plato)}</div>` : ''}
+                    <h1 class="dish-title">${plato.nombre}</h1>
+                    <div class="dish-meta-row">
+                        <span class="meta-item">🏠 ${plato.restaurante}</span>
+                        <span class="meta-item">📍 ${plato.distancia} km</span>
+                        <span class="meta-item">⏱️ ${plato.tiempoCaminando} min</span>
+                        <span class="meta-item">💵 ${plato.moneda || ''} ${plato.precio.toLocaleString()}</span>
                     </div>
-                    <div class="info-grid" style="margin-top:10px;">
-                        <div class="info-card">
-                            <div class="emoji">🕒</div>
-                            <div class="label">Horario</div>
-                            <div class="value">${plato.horarios}</div>
+
+                    <div class="content-actions hero-ctas">
+                        <div class="action-primary">
+                            <button class="cta-primary goTryBtn">↗ Go Try This</button>
+                        </div>
+                        <div class="action-row cta-secondary-row">
+                            <button class="cta-secondary viewMapBtn">📍 View on Map</button>
+                            <button class="cta-secondary comparePlacesBtn">↔ Compare Places</button>
                         </div>
                     </div>
                 </div>
@@ -192,36 +195,31 @@
                     <div class="featured-header">📺 Mira y Aprende</div>
                     ${plato.videoUrl ? `
                         <div class="featured-media">
-                            <a href="${plato.videoUrl}" target="_blank" rel="noopener noreferrer">
-                                <img src="${plato.imagen}" alt="video preview">
-                                <div class="play-overlay">▶</div>
-                            </a>
+                            <div class="video-container">
+                                <iframe src="${getEmbeddableUrl(plato.videoUrl)}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                            </div>
                         </div>
                     ` : `
                         <div class="featured-media">
                             <img src="${plato.imagen}" alt="${plato.nombre}">
                         </div>
                     `}
-                    <div class="featured-actions">
-                        <button class="btn-outline">Watch</button>
-                        <button class="btn-outline">Audio</button>
-                    </div>
                 </div>
 
                 <div class="accordion" id="acc-historia">
-                    <button class="accordion-toggle" aria-expanded="false">
+                    <button class="accordion-toggle" aria-expanded="false" aria-controls="acc-historia-panel">
                         <span class="accordion-title">📖 Historia del plato</span>
                         <span class="accordion-icon">˅</span>
                     </button>
-                    <div class="accordion-panel"><p>${plato.historia}</p></div>
+                    <div class="accordion-panel" id="acc-historia-panel"><p>${plato.historia}</p></div>
                 </div>
 
                 <div class="accordion" id="acc-ingredientes">
-                    <button class="accordion-toggle" aria-expanded="false">
+                    <button class="accordion-toggle" aria-expanded="false" aria-controls="acc-ingredientes-panel">
                         <span class="accordion-title">🥘 Ingredientes</span>
                         <span class="accordion-icon">˅</span>
                     </button>
-                    <div class="accordion-panel">
+                    <div class="accordion-panel" id="acc-ingredientes-panel">
                         <div class="ingredientes-list">
                             ${plato.ingredientes.map(ing => `<span class="ingrediente-chip">${ing}</span>`).join('')}
                         </div>
@@ -229,11 +227,11 @@
                 </div>
 
                 <div class="accordion" id="acc-datos">
-                    <button class="accordion-toggle" aria-expanded="false">
+                    <button class="accordion-toggle" aria-expanded="false" aria-controls="acc-datos-panel">
                         <span class="accordion-title">💡 Datos curiosos</span>
                         <span class="accordion-icon">˅</span>
                     </button>
-                    <div class="accordion-panel">
+                    <div class="accordion-panel" id="acc-datos-panel">
                         <ul class="curiosidades">
                             ${plato.datosCuriosos.map(dato => `<li>📌 ${dato}</li>`).join('')}
                         </ul>
@@ -241,7 +239,7 @@
                 </div>
 
                 <div class="reviews-card">
-                    <h3>⭐ Lo que opinan los comensales</h3>
+                    <h3>🍽️ Qué opinan los comensales</h3>
                     ${plato.reviews.map(review => `
                         <div class="review">
                             <div class="review-header">
@@ -263,24 +261,19 @@
 
             document.getElementById('dishContent').innerHTML = contentHtml;
 
-            // Eventos dinámicos (CTAs)
-            document.getElementById('goTryBtn')?.addEventListener('click', () => {
+            // Eventos dinámicos (CTAs) — attach to hero and content buttons by class
+            document.querySelectorAll('.goTryBtn').forEach(b => b.addEventListener('click', () => {
                 const url = `https://www.google.com/maps/dir/?api=1&destination=${plato.lat},${plato.lng}`;
                 window.open(url, '_blank');
-            });
+            }));
 
-            document.getElementById('viewMapBtn')?.addEventListener('click', () => {
+            document.querySelectorAll('.viewMapBtn').forEach(b => b.addEventListener('click', () => {
                 window.location.href = `map.html?dish=${plato.id}`;
-            });
+            }));
 
-            document.getElementById('comparePlacesBtn')?.addEventListener('click', () => {
+            document.querySelectorAll('.comparePlacesBtn').forEach(b => b.addEventListener('click', () => {
                 window.location.href = `compare.html?dish=${plato.id}`;
-            });
-
-            document.getElementById('openMapsBtn')?.addEventListener('click', () => {
-                const url = `https://www.google.com/maps/search/?api=1&query=${plato.lat},${plato.lng}`;
-                window.open(url, '_blank');
-            });
+            }));
 
             // Floating favorite button (top-right)
             document.getElementById('favHeroBtn')?.addEventListener('click', () => {
@@ -300,19 +293,50 @@
                 window.history.back();
             });
 
-            // Accordions: smooth toggle
+            // Accordions: smooth toggle (expand to full height without cutting content)
             document.querySelectorAll('.accordion').forEach(acc => {
                 const btn = acc.querySelector('.accordion-toggle');
                 const panel = acc.querySelector('.accordion-panel');
+                // initial closed state
                 panel.style.maxHeight = '0px';
+                panel.style.overflow = 'hidden';
+                panel.style.paddingTop = '0px';
+                panel.style.paddingBottom = '0px';
+
                 btn.addEventListener('click', () => {
-                    const open = acc.classList.toggle('open');
-                    if (open) {
-                        panel.style.maxHeight = panel.scrollHeight + 'px';
+                    const isOpen = acc.classList.contains('open');
+                    if (!isOpen) {
+                        // opening: animate to scrollHeight then remove maxHeight to allow natural height
+                        acc.classList.add('open');
+                        panel.style.overflow = 'hidden';
+                        const target = panel.scrollHeight;
+                        panel.style.maxHeight = target + 'px';
+                        panel.style.paddingTop = '';
+                        panel.style.paddingBottom = '';
                         acc.querySelector('.accordion-icon').style.transform = 'rotate(180deg)';
                         btn.setAttribute('aria-expanded', 'true');
+
+                        const onEnd = (e) => {
+                            if (e.target !== panel) return;
+                            // allow content to size naturally
+                            panel.style.maxHeight = 'none';
+                            panel.style.overflow = 'visible';
+                            panel.removeEventListener('transitionend', onEnd);
+                        };
+                        panel.addEventListener('transitionend', onEnd);
                     } else {
+                        // closing: set explicit height then collapse to 0
+                        panel.style.overflow = 'hidden';
+                        // if currently 'none', set to current scrollHeight first
+                        if (panel.style.maxHeight === 'none') {
+                            panel.style.maxHeight = panel.scrollHeight + 'px';
+                        }
+                        // force reflow
+                        void panel.offsetHeight;
+                        panel.style.paddingTop = '0px';
+                        panel.style.paddingBottom = '0px';
                         panel.style.maxHeight = '0px';
+                        acc.classList.remove('open');
                         acc.querySelector('.accordion-icon').style.transform = 'rotate(0deg)';
                         btn.setAttribute('aria-expanded', 'false');
                     }
