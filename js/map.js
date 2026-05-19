@@ -358,8 +358,8 @@
   // bottom nav actions (consistent with other pages)
   document.querySelectorAll('.nav-item').forEach(btn=> btn.addEventListener('click', ()=>{
     const page = btn.getAttribute('data-page');
-    if (page === 'profile') window.location.href = 'perfil.html';
-    else if (page === 'inicio') window.location.href = 'pag_inicial.html';
+    if (page === 'profile') window.location.href = 'profile.html';
+    else if (page === 'inicio') window.location.href = 'home.html';
     else if (page === 'favorites') window.location.href = 'favorites.html';
     else if (page === 'map') { /* already here */ }
   }));

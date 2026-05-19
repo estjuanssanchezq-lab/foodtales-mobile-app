@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>FoodTales - Burger Master 2026</title>
     <link rel="stylesheet" href="../css/home.css">
-    <link rel="stylesheet" href="../css/evento.css">
+    <link rel="stylesheet" href="../css/event.css">
 </head>
 <body class="dark">
     <div class="container">
@@ -373,17 +373,17 @@
         
         // ----- BOTÓN ATRÁS -----
         document.getElementById('backBtn').addEventListener('click', () => {
-            window.location.href = 'pag_inicial.html';
+            window.location.href = 'home.html';
         });
         
         // ----- NAVEGACIÓN UNIFICADA -----
         document.querySelectorAll('.nav-item').forEach(btn => {
             btn.addEventListener('click', () => {
                 const page = btn.getAttribute('data-page');
-                if (page === 'home') window.location.href = 'pag_inicial.html';
+                if (page === 'home') window.location.href = 'home.html';
                 else if (page === 'map') window.location.href = 'map.html';
                 else if (page === 'favorites') window.location.href = 'favorites.html';
-                else if (page === 'profile') window.location.href = 'perfil.html';
+                else if (page === 'profile') window.location.href = 'profile.html';
             });
         });
     </script>
