@@ -130,19 +130,24 @@
 
   function showPlatoPopup(p){
     const node = document.createElement('div');
-    node.className = 'popup-card';
+    node.className = 'map-popup-card';
     node.innerHTML = `
-      <div class="popup-img"><img src="${p.imagen}" alt="${p.nombre}" onerror="this.src='https://placehold.co/200x120?text=${encodeURIComponent(p.nombre)}'"></div>
-      <div class="popup-body">
-        <div class="popup-title">${p.nombre}</div>
-        <div class="popup-restaurant">${p.restaurante} • ${p.estrellas} ⭐</div>
-        <div class="popup-meta">💰 $${p.precio.toLocaleString()} • ${p.distancia} km</div>
-        <div class="popup-actions"><button class="btn-primary view-btn">Ver</button></div>
+      <div class="map-popup-image"><img src="${p.imagen}" alt="${p.nombre}" onerror="this.src='https://placehold.co/300x180?text=${encodeURIComponent(p.nombre)}'"></div>
+      <div class="map-popup-content">
+        <div class="map-popup-name">${p.nombre}</div>
+        <div class="map-popup-restaurant">${p.restaurante}</div>
+        <div class="map-popup-meta">
+          <span class="map-popup-rating">${'⭐'.repeat(Math.floor(p.estrellas))} ${p.estrellas}</span>
+          <span class="map-popup-price">💰 $${p.precio.toLocaleString()}</span>
+          <span class="map-popup-walk">🚶‍♂️ ${p.tiempoCaminando || p.tiempoCaminando === 0 ? p.tiempoCaminando : (p.distancia ? Math.round((p.distancia||1)*12) : '')} min</span>
+        </div>
+        <div class="map-popup-actions"><button class="map-popup-btn">Ver Detalles</button></div>
       </div>
     `;
-    const popup = new maplibregl.Popup({ offset: 18 }).setDOMContent(node).setLngLat([p.lng,p.lat]).addTo(map);
-    const viewBtn = node.querySelector('.view-btn');
-    if (viewBtn) viewBtn.addEventListener('click', ()=> { window.location.href = `dish-detail.html?id=${p.id}`; });
+    // Popup originates at the pin; no close button (user closes by tapping outside)
+    const popup = new maplibregl.Popup({ offset: [0, -18], closeButton: false }).setDOMContent(node).setLngLat([p.lng,p.lat]).addTo(map);
+    const viewBtn = node.querySelector('.map-popup-btn');
+    if (viewBtn) viewBtn.addEventListener('click', ()=> { window.location.href = `dish-detail.html?dish=${p.id}`; });
   }
 
   function addMarkersForPlatos(platosArray){
@@ -171,8 +176,8 @@
           <div class="plato-details"><span>📏 ${p.distancia} km</span><span>💰 $${p.precio.toLocaleString()}</span></div>
         </div>
       `;
-      // make the entire card clickable (tap anywhere to view)
-      card.addEventListener('click', ()=>{ map.easeTo({ center:[p.lng,p.lat], zoom:14, offset:[0,-120]}); showPlatoPopup(p); sheet.classList.remove('expanded'); sheet.classList.add('collapsed'); });
+      // make the entire card clickable (tap anywhere to move/center the map only)
+      card.addEventListener('click', ()=>{ map.easeTo({ center:[p.lng,p.lat], zoom:14, offset:[0,-120]}); sheet.classList.remove('expanded'); sheet.classList.add('collapsed'); });
       nearbyList.appendChild(card);
     });
   }
