@@ -1,0 +1,59 @@
+:root{ --event-orange: #ff6a00; }
+
+/* Ensure full-bleed map and page sizing */
+html, body { width:100%; height:100%; margin:0; }
+
+/* Force the event map to occupy full viewport */
+#event-map { width:100%; height:100vh; }
+
+/* Event banner */
+.event-banner{
+  position:fixed; top:12px; left:50%; transform:translateX(-50%); z-index:170;
+  background:var(--event-orange); color:#fff; padding:10px 18px; border-radius:16px; font-weight:800; box-sizing:border-box;
+  box-shadow: none; width: min(calc(100% - 24px), 980px); text-align:center; font-size:1rem;
+}
+
+/* Topbar that holds banner at left and theme toggle at right */
+.event-topbar{ position:fixed; top:12px; left:12px; right:12px; z-index:170; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.event-topbar .event-banner{ position:static; transform:none; width:auto; }
+.event-topbar .theme-toggle{ background:transparent; border:none; color:var(--text); font-size:1.05rem; padding:8px 10px; border-radius:10px; cursor:pointer; }
+.event-topbar .theme-toggle:hover{ background: rgba(255,255,255,0.04); }
+
+/* Make sure event map is not covered by banner */
+#event-map{ top:0; }
+
+/* Event-specific pin color */
+.event-pin .pin{ background: var(--event-orange) !important; border-color: rgba(0,0,0,0.12) !important; }
+
+/* Make event map occupy full viewport like the main map */
+#event-map{ position:fixed; inset:0; width:100vw; height:100vh; z-index:0; }
+
+/* Bottom sheet event header */
+.sheet-event-header{ padding: 12px 16px; display:flex; flex-direction:column; gap:4px; align-items:center; }
+.event-sheet-title{ font-weight:900; font-size:1.1rem; color: #fff; }
+.event-sheet-subtitle{ font-size:0.9rem; color: rgba(255,255,255,0.85); }
+
+/* Increase handle area for easier dragging on event map */
+#bottomSheet .sheet-handle{ height:56px; }
+#bottomSheet .sheet-handle::before{ width:48px; height:6px; border-radius:6px; }
+
+/* Light-mode adjustments for sheet header */
+body.light .event-sheet-title{ color: var(--text); }
+body.light .event-sheet-subtitle{ color: rgba(26,26,26,0.72); }
+
+/* Override bottom-sheet background for event (dark premium) */
+body.dark .bottom-sheet{ background: #050505 !important; border:1px solid rgba(255,255,255,0.06) !important; }
+
+/* Event popup overrides */
+body.dark .map-popup-card{ border:1px solid var(--event-orange) !important; background:#050505 !important; }
+body.dark .map-popup-btn{ background: var(--event-orange) !important; color:#111 !important; }
+
+body.light .map-popup-card{ border:1px solid rgba(0,0,0,0.08) !important; background:#fff !important; }
+body.light .map-popup-btn{ background: var(--event-orange) !important; color:#111 !important; }
+
+/* Responsive: ensure bottom sheet centered and margins */
+@media (max-width: 600px){
+  .event-banner{ left:50%; transform:translateX(-50%); width: calc(100% - 24px); }
+  .bottom-sheet{ left:8px; right:8px; transform:none; width: calc(100% - 16px); max-width: calc(100% - 16px); }
+  .map-popup-card{ width: calc(100% - 48px); }
+}

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FoodTales - Burger Master Map</title>
+
+  <link href="https://unpkg.com/maplibre-gl/dist/maplibre-gl.css" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/home.css" />
+  <link rel="stylesheet" href="../css/map.css" />
+  <link rel="stylesheet" href="../css/map_event.css" />
+</head>
+<body class="dark">
+  <div id="event-map"></div>
+
+  <!-- Event topbar: banner (left) + theme toggle (right) -->
+  <div class="event-topbar">
+    <div class="event-banner">🔥 Burger Master 2026</div>
+    <button id="themeToggle" class="theme-toggle" aria-label="Alternar tema">🌙</button>
+  </div>
+
+  <!-- Bottom sheet (event specific) -->
+  <div id="bottomSheet" class="bottom-sheet collapsed">
+    <div id="sheetHandle" class="sheet-handle"></div>
+    <div class="sheet-event-header">
+      <div class="event-sheet-title">Burger Master 2026</div>
+      <div class="event-sheet-subtitle">6 restaurantes participando</div>
+    </div>
+    <div class="sheet-body">
+      <div id="nearbyList" class="nearby-list"></div>
+    </div>
+  </div>
+
+  <!-- Bottom navigation -->
+  <div class="bottom-nav">
+    <button class="nav-item" data-page="home">🏠</button>
+    <button class="nav-item active" data-page="map">📍</button>
+    <button class="nav-item" data-page="favorites">❤️</button>
+    <button class="nav-item" data-page="profile">👤</button>
+  </div>
+
+  <script src="../js/data.js"></script>
+  <script src="https://unpkg.com/maplibre-gl/dist/maplibre-gl.js"></script>
+  <script src="../js/map_event.js"></script>
+  <script>
+    // navigation
+    document.getElementById('openEventMapBtn')?.addEventListener('click', ()=>{ window.location.href = 'map_event.html'; });
+    document.querySelectorAll('.nav-item').forEach(btn => btn.addEventListener('click', ()=>{
+      const page = btn.getAttribute('data-page');
+      if (page === 'home') window.location.href = 'home.html';
+      else if (page === 'map') window.location.href = 'map_event.html';
+      else if (page === 'favorites') window.location.href = 'favorites.html';
+      else if (page === 'profile') window.location.href = 'profile.html';
+    }));
+  </script>
+</body>
+</html>

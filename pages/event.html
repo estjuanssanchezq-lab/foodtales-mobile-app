@@ -32,6 +32,10 @@
             <div class="event-hero-subtitle">Descubre las mejores hamburguesas de Bogotá</div>
         </div>
 
+        <div style="text-align:center; margin:16px 0;">
+            <button class="map-btn" id="openEventMapBtn">📍 Ver mapa del evento</button>
+        </div>
+
         <!-- About the Event -->
         <div class="info-card">
             <div class="info-card-title">📖 Sobre el Evento</div>
@@ -375,6 +379,10 @@
         document.getElementById('backBtn').addEventListener('click', () => {
             window.location.href = 'home.html';
         });
+
+        // ----- ABRIR MAPA DEL EVENTO -----
+        const openEventMapBtn = document.getElementById('openEventMapBtn');
+        if (openEventMapBtn) openEventMapBtn.addEventListener('click', () => { window.location.href = 'map_event.html'; });
         
         // ----- NAVEGACIÓN UNIFICADA -----
         document.querySelectorAll('.nav-item').forEach(btn => {
